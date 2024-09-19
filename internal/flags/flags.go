@@ -6,7 +6,7 @@ import (
 	"flag"
 	"os"
 
-	"github.com/KznRkjp/go-keepr.git/internal/config"
+	"github.com/KznRkjp/go-keeper.git/internal/config"
 )
 
 // FlagConfigPath содержит путь к файлу конфигурации
