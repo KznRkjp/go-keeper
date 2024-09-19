@@ -18,6 +18,9 @@ var FlagRunAddr string
 // FlagDBString содержит данные для подключения к БД
 var FlagDBString string
 
+// FlagBuildVersion содержит номер билда
+var FlagBuildVersion string
+
 func ParseFlags() {
 
 	flag.StringVar(&FlagConfigPath, "c", "", "path to config file")
@@ -28,6 +31,9 @@ func ParseFlags() {
 
 	// регистрируем переменную FlagDBString - для подлкючения к базе данных
 	flag.StringVar(&FlagDBString, "d", "", "String for DB connection")
+
+	// регистрируем переменную FlagDBString - для подлкючения к базе данных
+	flag.StringVar(&FlagBuildVersion, "b", "0.0.0-a.1", "Build version")
 
 	flag.Parse()
 
