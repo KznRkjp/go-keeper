@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/KznRkjp/go-keeper.git/internal/config"
+	"github.com/KznRkjp/go-keeper.git/internal/middleware/mlogger"
 )
 
 // FlagConfigPath содержит путь к файлу конфигурации
@@ -22,7 +23,7 @@ var FlagDBString string
 var FlagBuildVersion string
 
 func ParseFlags() {
-
+	mlogger.Logger.Info("Strting parsing flags")
 	flag.StringVar(&FlagConfigPath, "c", "", "path to config file")
 
 	// регистрируем переменную flagRunAddr
@@ -61,4 +62,6 @@ func ParseFlags() {
 
 		}
 	}
+	mlogger.Logger.Info("Flags parsed")
+
 }
