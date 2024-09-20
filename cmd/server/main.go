@@ -88,6 +88,6 @@ func main() {
 	// здесь можно освобождать ресурсы перед выходом,
 	// например закрыть соединение с базой данных,
 	// закрыть открытые файлы
-	fmt.Println("Server Shutdown gracefully")
+	fmt.Println("Server shuted down gracefully")
 
 }
