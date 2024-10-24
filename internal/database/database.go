@@ -19,6 +19,8 @@ func InitDB(dataSourceName string) error {
 	if err != nil {
 		return err
 	}
+	defer db.Close()
+	createInitialDB(db)
 	return db.Ping()
 }
 
@@ -48,4 +50,5 @@ func createInitialDB(db *sql.DB) error {
 	if err != nil {
 		log.Println("Database 'url' exists", err)
 	}
+	return err
 }

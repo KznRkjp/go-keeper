@@ -10,6 +10,7 @@ import (
 	"syscall"
 
 	"github.com/KznRkjp/go-keeper.git/internal/buildinfo"
+	"github.com/KznRkjp/go-keeper.git/internal/database"
 	"github.com/KznRkjp/go-keeper.git/internal/flags"
 	"github.com/KznRkjp/go-keeper.git/internal/middleware/mlogger"
 	"github.com/KznRkjp/go-keeper.git/internal/router"
@@ -30,6 +31,17 @@ func main() {
 	flags.ParseFlags()
 
 	//TODO: create database
+	if flags.FlagDBString != "" {
+		err := database.InitDB(flags.FlagDBString)
+		//sql.Open("pgx", flags.FlagDBString) // выбор способа храненеи данных в зависимости от флага.
+		if err != nil {
+			log.Fatal(err)
+		}
+		//defer database.DB.Close()
+		//database.CreateTable(database.DB) // создание необходимых таблиц если их нет.
+	} else {
+		log.Fatal("Error connecting to databse")
+	}
 
 	//TODO: https
 	HTTPS := false
