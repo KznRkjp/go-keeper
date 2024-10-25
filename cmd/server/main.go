@@ -20,7 +20,7 @@ import (
 var HTTPS bool
 
 func main() {
-	mlogger.Debug = false
+	mlogger.Debug = true
 	//Печатем билд и дату
 	buildinfo.PrintBuildVersionDate()
 

@@ -5,8 +5,10 @@ import (
 	"database/sql"
 	"log"
 
+	"github.com/KznRkjp/go-keeper.git/internal/encrypt"
 	"github.com/KznRkjp/go-keeper.git/internal/flags"
 	"github.com/KznRkjp/go-keeper.git/internal/middleware/mlogger"
+	"github.com/KznRkjp/go-keeper.git/internal/models"
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
@@ -19,7 +21,7 @@ func InitDB(dataSourceName string) error {
 	if err != nil {
 		return err
 	}
-	defer db.Close()
+	// defer db.Close()
 	createInitialDB(db)
 	return db.Ping()
 }
@@ -29,19 +31,21 @@ func GetDB() *sql.DB {
 	return db
 }
 
-// Создание необходимых таблиц
+// Создание необходимых таблиц - можно конечно универасальную функцию... но потом.
 func createInitialDB(db *sql.DB) error {
-	// mlogger.Debug = true
-	mlogger.Info("DB String" + flags.FlagDBString)
-	ctx := context.Background()
 
-	//Таблица пользователей
+	//что бы не забыть как запускать
+	mlogger.Info("DB String" + flags.FlagDBString)
+
+	// ctx := context.Background()
+
+	//START ########## Таблица пользователей
 	insertDynStmt := `CREATE TABLE go_k_users (id SERIAL PRIMARY KEY, 
 											email text not null unique,
 											password TEXT,
 											created_at timestamp default current_timestamp);`
 	var err error
-	_, err = db.ExecContext(ctx, insertDynStmt)
+	_, err = db.Exec(insertDynStmt)
 	if err.Error() == "ERROR: relation \"go_k_users\" already exists (SQLSTATE 42P07)" {
 		err = nil
 		mlogger.Info("Table go_k_users already exists")
@@ -49,14 +53,17 @@ func createInitialDB(db *sql.DB) error {
 	if err != nil {
 		log.Fatal(err)
 	}
-	//Таблица учетных данных - логопас
+
+	//STOP ########## Таблица пользователей
+
+	//START ########## Таблица учетных данных - логопас
 	insertDynStmt = `CREATE TABLE logopass (id SERIAL PRIMARY KEY,
 		 									login TEXT,
 											password TEXT,
 											go_k_user_id INTEGER,
 											created_at timestamp default current_timestamp,
 											CONSTRAINT fk_go_k_user_id FOREIGN KEY (go_k_user_id) REFERENCES go_k_users (id));`
-	_, err = db.ExecContext(ctx, insertDynStmt)
+	_, err = db.Exec(insertDynStmt)
 	if err.Error() == "ERROR: relation \"logopass\" already exists (SQLSTATE 42P07)" {
 		err = nil
 		mlogger.Info("Table logopass already exists")
@@ -64,8 +71,9 @@ func createInitialDB(db *sql.DB) error {
 	if err != nil {
 		log.Fatal(err)
 	}
+	//STOP ######### Таблица учетных данных - логопас
 
-	//Таблица учетных данных - логопас
+	//START ######### Таблица учетных данных - логопас
 	insertDynStmt = `CREATE TABLE bank_card (id SERIAL PRIMARY KEY,
 		 									card_holder_name TEXT,
 											card_number TEXT,
@@ -73,15 +81,74 @@ func createInitialDB(db *sql.DB) error {
 											go_k_user_id INTEGER,
 											created_at timestamp default current_timestamp,
 											CONSTRAINT fk_go_k_user_id FOREIGN KEY (go_k_user_id) REFERENCES go_k_users (id));`
-	_, err = db.ExecContext(ctx, insertDynStmt)
+	_, err = db.Exec(insertDynStmt)
 	if err.Error() == "ERROR: relation \"bank_card\" already exists (SQLSTATE 42P07)" {
 		err = nil
 		mlogger.Info("Table bank_card already exists")
 	}
 	if err != nil {
 		mlogger.Logger.Fatal(err.Error())
-		// log.Fatal(err)
+
 	}
+	//STOP ######### Таблица учетных данных - логопас
+
+	// START ######### Таблица текстовых данных
+	insertDynStmt = `CREATE TABLE text_data (id SERIAL PRIMARY KEY,
+		 									text TEXT,
+											go_k_user_id INTEGER,
+											created_at timestamp default current_timestamp,
+											CONSTRAINT fk_go_k_user_id FOREIGN KEY (go_k_user_id) REFERENCES go_k_users (id));`
+	_, err = db.Exec(insertDynStmt)
+	if err.Error() == "ERROR: relation \"text_data\" already exists (SQLSTATE 42P07)" {
+		err = nil
+		mlogger.Info("Table text_data already exists")
+	}
+	if err != nil {
+		log.Fatal(err)
+	}
+	// STOP ######### Таблица текстовых данных
+
+	// START ######### Таблица бинарных данных
+	insertDynStmt = `CREATE TABLE binary_data (id SERIAL PRIMARY KEY,
+		 									file_name TEXT,
+											location TEXT,
+											go_k_user_id INTEGER,
+											created_at timestamp default current_timestamp,
+											CONSTRAINT fk_go_k_user_id FOREIGN KEY (go_k_user_id) REFERENCES go_k_users (id));`
+	_, err = db.Exec(insertDynStmt)
+	if err.Error() == "ERROR: relation \"binary_data\" already exists (SQLSTATE 42P07)" {
+		err = nil
+		mlogger.Info("Table binary_data already exists")
+	}
+	if err != nil {
+		log.Fatal(err)
+	}
+	// STOP ######### Таблица бинарных данных
 
 	return err
+}
+
+func RegisterUser(user *models.User, ctx context.Context) (*models.User, error) {
+	insertDynStmt := `insert into "go_k_users"("email", "password") values($1, $2)`
+	password, err := encrypt.HashPassword(user.Password)
+	if err != nil {
+		mlogger.Logger.Error(err.Error())
+		return nil, err
+	}
+	_, err = db.ExecContext(ctx, insertDynStmt, user.Email, password)
+	if err != nil {
+		mlogger.Logger.Error(err.Error())
+		return nil, err
+	}
+	// fmt.Println(val.RowsAffected())
+	return returnUser(user.Email)
+}
+
+func returnUser(email string) (*models.User, error) {
+	var user models.User
+	err := db.QueryRow("select * from go_k_users where email = $1", email).Scan(&user.ID, &user.Email, &user.Password, &user.CreatedAt)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
 }
