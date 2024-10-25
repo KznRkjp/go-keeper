@@ -7,6 +7,7 @@ import (
 	"log"
 
 	"github.com/KznRkjp/go-keeper.git/internal/flags"
+	"github.com/KznRkjp/go-keeper.git/internal/middleware/mlogger"
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
@@ -29,26 +30,57 @@ func GetDB() *sql.DB {
 	return db
 }
 
+// Создание необходимых таблиц
 func createInitialDB(db *sql.DB) error {
 	fmt.Println("DB String", flags.FlagDBString)
 	ctx := context.Background()
-	insertDynStmtUser := `CREATE TABLE url_users (id SERIAL PRIMARY KEY, uuid TEXT UNIQUE, token TEXT);`
+
+	//Таблица пользователей
+	insertDynStmt := `CREATE TABLE go_k_users (id SERIAL PRIMARY KEY, 
+											email text not null unique,
+											password TEXT,
+											created_at timestamp default current_timestamp);`
 	var err error
-	_, err = db.ExecContext(ctx, insertDynStmtUser)
+	_, err = db.ExecContext(ctx, insertDynStmt)
+	if err.Error() == "ERROR: relation \"go_k_users\" already exists (SQLSTATE 42P07)" {
+		err = nil
+		mlogger.Logger.Info("Table go_k_users already exists")
+	}
 	if err != nil {
-		log.Println("Database 'user' exists", err)
+		log.Fatal(err)
+	}
+	//Таблица учетных данных - логопас
+	insertDynStmt = `CREATE TABLE logopass (id SERIAL PRIMARY KEY,
+		 									login TEXT,
+											password TEXT,
+											go_k_user_id INTEGER,
+											created_at timestamp default current_timestamp,
+											CONSTRAINT fk_go_k_user_id FOREIGN KEY (go_k_user_id) REFERENCES go_k_users (id));`
+	_, err = db.ExecContext(ctx, insertDynStmt)
+	if err.Error() == "ERROR: relation \"logopass\" already exists (SQLSTATE 42P07)" {
+		err = nil
+		mlogger.Logger.Info("Table logopass already exists")
+	}
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	insertDynStmtURL := `CREATE TABLE url (id SERIAL PRIMARY KEY,
-		 									correlationid TEXT,
-											url_user_uuid TEXT,
-											shorturl TEXT, 
-											originalurl TEXT,
-											deleted_flag BOOLEAN DEFAULT FALSE,
-											CONSTRAINT fk_url_user_uuid FOREIGN KEY (url_user_uuid) REFERENCES url_users (uuid));`
-	_, err = db.ExecContext(ctx, insertDynStmtURL)
-	if err != nil {
-		log.Println("Database 'url' exists", err)
+	//Таблица учетных данных - логопас
+	insertDynStmt = `CREATE TABLE bank_card (id SERIAL PRIMARY KEY,
+		 									card_holder_name TEXT,
+											card_number TEXT,
+											expiration_date TEXT,
+											go_k_user_id INTEGER,
+											created_at timestamp default current_timestamp,
+											CONSTRAINT fk_go_k_user_id FOREIGN KEY (go_k_user_id) REFERENCES go_k_users (id));`
+	_, err = db.ExecContext(ctx, insertDynStmt)
+	if err.Error() == "ERROR: relation \"bank_card\" already exists (SQLSTATE 42P07)" {
+		err = nil
+		mlogger.Logger.Info("Table bank_card already exists")
 	}
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	return err
 }
