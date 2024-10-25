@@ -20,6 +20,7 @@ import (
 var HTTPS bool
 
 func main() {
+	mlogger.Debug = false
 	//Печатем билд и дату
 	buildinfo.PrintBuildVersionDate()
 
@@ -63,7 +64,7 @@ func main() {
 
 	} else {
 		go func() {
-			mlogger.Logger.Info("Server started", zap.String("address:", flags.FlagRunAddr))
+			mlogger.Info("Server started" + "address:" + flags.FlagRunAddr)
 			if err := server.ListenAndServe(); err != nil {
 				// записываем в лог ошибку, если сервер не запустился
 				mlogger.ServerStartLog(err.Error())

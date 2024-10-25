@@ -8,6 +8,7 @@ import (
 )
 
 var Logger *zap.Logger
+var Debug bool = false
 
 // Тут мы логгируем именно старт сервера
 func ServerStartLog(addr string) {
@@ -24,6 +25,12 @@ func ServerStartLog(addr string) {
 		"Starting server", "addr", addr,
 	)
 
+}
+
+func Info(msg string) {
+	if Debug {
+		Logger.Info(msg)
+	}
 }
 
 // обертка для логировагния действий сервера с подсчетом времени

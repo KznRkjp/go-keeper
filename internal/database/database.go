@@ -3,7 +3,6 @@ package database
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"log"
 
 	"github.com/KznRkjp/go-keeper.git/internal/flags"
@@ -32,7 +31,8 @@ func GetDB() *sql.DB {
 
 // Создание необходимых таблиц
 func createInitialDB(db *sql.DB) error {
-	fmt.Println("DB String", flags.FlagDBString)
+	// mlogger.Debug = true
+	mlogger.Info("DB String" + flags.FlagDBString)
 	ctx := context.Background()
 
 	//Таблица пользователей
@@ -44,7 +44,7 @@ func createInitialDB(db *sql.DB) error {
 	_, err = db.ExecContext(ctx, insertDynStmt)
 	if err.Error() == "ERROR: relation \"go_k_users\" already exists (SQLSTATE 42P07)" {
 		err = nil
-		mlogger.Logger.Info("Table go_k_users already exists")
+		mlogger.Info("Table go_k_users already exists")
 	}
 	if err != nil {
 		log.Fatal(err)
@@ -59,7 +59,7 @@ func createInitialDB(db *sql.DB) error {
 	_, err = db.ExecContext(ctx, insertDynStmt)
 	if err.Error() == "ERROR: relation \"logopass\" already exists (SQLSTATE 42P07)" {
 		err = nil
-		mlogger.Logger.Info("Table logopass already exists")
+		mlogger.Info("Table logopass already exists")
 	}
 	if err != nil {
 		log.Fatal(err)
@@ -76,10 +76,11 @@ func createInitialDB(db *sql.DB) error {
 	_, err = db.ExecContext(ctx, insertDynStmt)
 	if err.Error() == "ERROR: relation \"bank_card\" already exists (SQLSTATE 42P07)" {
 		err = nil
-		mlogger.Logger.Info("Table bank_card already exists")
+		mlogger.Info("Table bank_card already exists")
 	}
 	if err != nil {
-		log.Fatal(err)
+		mlogger.Logger.Fatal(err.Error())
+		// log.Fatal(err)
 	}
 
 	return err

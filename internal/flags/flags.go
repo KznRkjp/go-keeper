@@ -23,7 +23,7 @@ var FlagDBString string
 var FlagBuildVersion string
 
 func ParseFlags() {
-	mlogger.Logger.Info("Strting parsing flags")
+	mlogger.Info("Strting parsing flags")
 	flag.StringVar(&FlagConfigPath, "c", "", "path to config file")
 
 	// регистрируем переменную flagRunAddr
@@ -62,6 +62,6 @@ func ParseFlags() {
 
 		}
 	}
-	mlogger.Logger.Info("Flags parsed")
+	mlogger.Info("Flags parsed")
 
 }
