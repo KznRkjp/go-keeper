@@ -3,7 +3,9 @@ package database
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"log"
+	"strconv"
 
 	"github.com/KznRkjp/go-keeper.git/internal/encrypt"
 	"github.com/KznRkjp/go-keeper.git/internal/flags"
@@ -142,6 +144,20 @@ func RegisterUser(user *models.User, ctx context.Context) (*models.User, error) 
 	}
 	// fmt.Println(val.RowsAffected())
 	return returnUser(user.Email)
+}
+
+func LoginUser(user *models.User, ctx context.Context) (*models.User, error) {
+	db_user, err := returnUser(user.Email)
+	if err != nil {
+		return nil, err
+	}
+	mlogger.Info("Found user with id " + strconv.FormatInt(db_user.ID, 10))
+	if !encrypt.VerifyPassword(user.Password, db_user.Password) {
+		mlogger.Info(db_user.Password)
+		mlogger.Info(user.Password)
+		return nil, errors.New("wrong password")
+	}
+	return user, nil
 }
 
 func returnUser(email string) (*models.User, error) {

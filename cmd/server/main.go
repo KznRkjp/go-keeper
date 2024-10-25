@@ -86,6 +86,7 @@ func main() {
 		// поскольку нужно прочитать только одно прерывание,
 		// можно обойтись без цикла
 		<-sigint
+		database.GetDB().Close()
 		// получили сигнал os.Interrupt, запускаем процедуру graceful shutdown
 		if err := server.Shutdown(context.Background()); err != nil {
 			// ошибки закрытия Listener

@@ -14,6 +14,7 @@ func Main() chi.Router {
 	r.Use(mlogger.WithLogging)
 	// r.Use(middleware.Compress(5))
 	r.Post("/api/v1/register", gzipper.GzipMiddleware(app.PostRegisterUser))
+	r.Post("/api/v1/login", gzipper.GzipMiddleware(app.PostLoginUser))
 	// r.Get("/{id}", gzipper.GzipMiddleware(app.ReturnURL))
 	// r.Post("/api/shorten", gzipper.GzipMiddleware(app.APIGetURL))
 	// r.Post("/api/shorten/batch", gzipper.GzipMiddleware(app.APIBatchGetURL))
