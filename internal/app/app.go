@@ -40,6 +40,10 @@ func PostRegisterUser(res http.ResponseWriter, req *http.Request) {
 	mlogger.Info("Added user: " + user.Email + " with ID " + strconv.FormatInt(user.ID, 10))
 }
 
+// PostLoginUser gets user credentials, checks them against database and returns JWT token.
+// curl -X POST http://localhost:4443/api/v1/login
+// -H 'Content-Type: application/json'
+// -d '{"email":*************,"password":"my_password}'
 func PostLoginUser(res http.ResponseWriter, req *http.Request) {
 	mlogger.Info("User login")
 	var user models.User
