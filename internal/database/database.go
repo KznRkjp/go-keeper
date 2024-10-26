@@ -6,6 +6,7 @@ import (
 	"errors"
 	"log"
 	"strconv"
+	"time"
 
 	"github.com/KznRkjp/go-keeper.git/internal/encrypt"
 	"github.com/KznRkjp/go-keeper.git/internal/flags"
@@ -39,8 +40,6 @@ func createInitialDB(db *sql.DB) error {
 	//что бы не забыть как запускать
 	mlogger.Info("DB String" + flags.FlagDBString)
 
-	// ctx := context.Background()
-
 	//START ########## Таблица пользователей
 	insertDynStmt := `CREATE TABLE go_k_users (id SERIAL PRIMARY KEY, 
 											email text not null unique,
@@ -55,6 +54,7 @@ func createInitialDB(db *sql.DB) error {
 	if err != nil {
 		log.Fatal(err)
 	}
+	time.Sleep(time.Second * 1)
 
 	//STOP ########## Таблица пользователей
 
@@ -73,9 +73,10 @@ func createInitialDB(db *sql.DB) error {
 	if err != nil {
 		log.Fatal(err)
 	}
+	time.Sleep(time.Second * 1)
 	//STOP ######### Таблица учетных данных - логопас
 
-	//START ######### Таблица учетных данных - логопас
+	//START ######### Таблица учетных данных - банковские карты
 	insertDynStmt = `CREATE TABLE bank_card (id SERIAL PRIMARY KEY,
 		 									card_holder_name TEXT,
 											card_number TEXT,
@@ -92,7 +93,8 @@ func createInitialDB(db *sql.DB) error {
 		mlogger.Logger.Fatal(err.Error())
 
 	}
-	//STOP ######### Таблица учетных данных - логопас
+	time.Sleep(time.Second * 1)
+	//STOP ######### Таблица учетных данных - банковские карты
 
 	// START ######### Таблица текстовых данных
 	insertDynStmt = `CREATE TABLE text_data (id SERIAL PRIMARY KEY,
@@ -108,6 +110,7 @@ func createInitialDB(db *sql.DB) error {
 	if err != nil {
 		log.Fatal(err)
 	}
+	time.Sleep(time.Second * 1)
 	// STOP ######### Таблица текстовых данных
 
 	// START ######### Таблица бинарных данных
@@ -125,6 +128,7 @@ func createInitialDB(db *sql.DB) error {
 	if err != nil {
 		log.Fatal(err)
 	}
+	time.Sleep(time.Second * 1)
 	// STOP ######### Таблица бинарных данных
 
 	return err
