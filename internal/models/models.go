@@ -12,6 +12,8 @@ type User struct {
 
 // Хранимые данные пользователя - логин и пароль
 type LoginPassword struct {
+	ID        int64     `json:"id"`
+	Name      string    `json:"name"`
 	Login     string    `json:"login"`
 	Password  string    `json:"password"`
 	CreatedAt time.Time `json:"created_at"`
@@ -29,6 +31,7 @@ type BankCard struct {
 // Хранимые данные пользователя - текстовое сообщение
 type TextMessage struct {
 	ID        int64     `json:"id"`
+	Name      string    `json:"name"`
 	Text      string    `json:"text"`
 	CreatedAt time.Time `json:"created_at"`
 }
@@ -36,6 +39,7 @@ type TextMessage struct {
 // Хранимые данные пользователя - двоичное сообщение
 type BinaryMessage struct {
 	ID        int64     `json:"id"`
+	Name      string    `json:"name"`
 	FileName  string    `json:"file_name"`
 	Location  string    `json:"location"`
 	CreatedAt time.Time `json:"created_at"`

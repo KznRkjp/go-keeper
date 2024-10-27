@@ -2,6 +2,7 @@ package app
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -47,13 +48,14 @@ func PostRegisterUser(res http.ResponseWriter, req *http.Request) {
 func PostLoginUser(res http.ResponseWriter, req *http.Request) {
 	mlogger.Info("User login")
 	var user models.User
+	fmt.Println(user)
 	dec := json.NewDecoder(req.Body)
 	err := dec.Decode(&user)
 	if err != nil {
 		http.Error(res, "can't decode body", http.StatusBadRequest)
 		return
 	}
-	mlogger.Info("Decoded user: " + user.Email + " with password " + user.Password)
+	mlogger.Info("Decoded user (from body): " + user.Email + " with password " + user.Password)
 
 	newUser, err := database.LoginUser(&user, req.Context())
 	if err != nil {
@@ -68,6 +70,54 @@ func PostLoginUser(res http.ResponseWriter, req *http.Request) {
 	}
 	createCookie(&res, newUser)
 	res.WriteHeader(http.StatusOK)
+}
+
+func PostData(res http.ResponseWriter, req *http.Request) {
+	mlogger.Info("Posting data")
+	userId := checkCookie(req)
+	if userId == 0 {
+		mlogger.Info("User not found")
+		res.WriteHeader(http.StatusNotFound)
+		return
+	}
+	var data models.LoginPassword
+	dec := json.NewDecoder(req.Body)
+	err := dec.Decode(&data)
+	if err != nil {
+		http.Error(res, "can't decode body", http.StatusBadRequest)
+		return
+	}
+	// data.UserID = userId
+	err = database.PostData(&data, &userId, req.Context())
+	if err != nil {
+		mlogger.Info(err.Error())
+		res.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	res.WriteHeader(http.StatusCreated)
+}
+
+func GetData(res http.ResponseWriter, req *http.Request) {
+	mlogger.Info("Getting data")
+	userId := checkCookie(req)
+	if userId == 0 {
+		mlogger.Info("User not found")
+		res.WriteHeader(http.StatusNotFound)
+		return
+	}
+	data, err := database.GetData(&userId, req.Context())
+	if err != nil {
+		mlogger.Info(err.Error())
+		res.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	if data == nil {
+		mlogger.Info("Data not found")
+		res.WriteHeader(http.StatusNotFound)
+		return
+	}
+	res.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(res).Encode(data)
 }
 
 // writes cookie directly to response
@@ -86,4 +136,21 @@ func createCookie(res *http.ResponseWriter, user *models.User) {
 		Expires: expires,
 	}
 	http.SetCookie(*res, &cookie)
+}
+
+func checkCookie(req *http.Request) int {
+	mlogger.Info("Checking cookie")
+
+	cookie, err := req.Cookie("JWT")
+	// fmt.Println(cookie)
+	if err != nil {
+		mlogger.Info(err.Error())
+		return 0
+	}
+	userId, err := encrypt.GetUserID(cookie.Value)
+	if err != nil {
+		mlogger.Info(err.Error())
+		return 0
+	}
+	return userId
 }

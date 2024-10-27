@@ -1,0 +1,12 @@
+Register:
+curl -X POST http://localhost:4443/api/v1/register -H 'Content-Type: application/json' -d '{"email":"john@ne.doe","password":"my_password"}'
+
+Login:
+curl -X POST http://localhost:4443/api/v1/login -H 'Content-Type: application/json' -d '{"email":"john@ne.doe","password":"my_password"}' -v
+
+Post data:
+curl -X POST http://localhost:4443/api/v1/data -H 'Content-Type: application/json' -d '{"name":"my_first_logopass","login":"john123", "password":"secretpass"}' --cookie "JWT=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAwNzIyMTIsIlVzZXJJRCI6MX0.nkOc-rgXpuIhGlK4GzPEwyQqOxfl1SikPKVxmvcGMu4" -v
+
+Get data:
+curl -X GET http://localhost:4443/api/v1/data -H 'Content-Type: application/json' --cookie "JWT=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAwNzIyMTIsIlVzZXJJRCI6MX0.nkOc-rgXpuIhGlK4GzPEwyQqOxfl1SikPKVxmvcGMu4 -v
+

@@ -2,9 +2,9 @@ package encrypt
 
 import (
 	"fmt"
-	"log"
 	"time"
 
+	"github.com/KznRkjp/go-keeper.git/internal/middleware/mlogger"
 	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -56,16 +56,16 @@ func GetUserID(tokenString string) (int, error) {
 			return []byte(SecretKey), nil
 		})
 	if err != nil {
-		fmt.Println(err)
-		return claims.UserID, err
+		return -2, err
 	}
 
 	if !token.Valid {
-		log.Println("Token is not valid")
-		return claims.UserID, err
+		mlogger.Info("Token is not valid")
+		return -1, err
 	}
 
-	log.Println("Token is valid")
+	mlogger.Info("Token is valid")
+	mlogger.Info(fmt.Sprintf("UserID: %d", claims.UserID))
 	return claims.UserID, err
 }
 
