@@ -9,6 +9,7 @@ import (
 	"encoding/hex"
 
 	"github.com/KznRkjp/go-keeper.git/internal/buildinfo"
+	clientapp "github.com/KznRkjp/go-keeper.git/internal/client-app"
 	"github.com/KznRkjp/go-keeper.git/internal/encrypt"
 	"github.com/KznRkjp/go-keeper.git/internal/models"
 )
@@ -34,6 +35,7 @@ func main() {
 		fmt.Scan(&user.User.Email)
 		fmt.Println("Enter password")
 		fmt.Scan(&user.User.Password)
+		clientapp.RegisterUser(&user)
 	case 2:
 		fmt.Println("Enter e-mail")
 		fmt.Scan(&user.User.Email)
