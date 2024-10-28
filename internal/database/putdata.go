@@ -68,6 +68,7 @@ func PutDataTxt(data *models.TextMessage, userId *int, ctx context.Context) erro
 	return nil
 }
 
+// PutDataBM - обновляет запись binary_data в базе данных.
 func PutDataBM(data *models.BinaryMessage, userId *int, ctx context.Context) error {
 	mlogger.Info("Updating BinaryMessage record with ID: " + strconv.FormatInt(data.ID, 10) + " for user ID: " + strconv.Itoa(*userId))
 	updateDynStmt := `UPDATE binary_data

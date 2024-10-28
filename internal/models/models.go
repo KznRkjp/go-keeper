@@ -51,3 +51,8 @@ type DBSearchAll struct {
 	TextMsgs   []TextMessage   `json:"text_message_list"`
 	BinaryMsgs []BinaryMessage `json:"binary_message_list"`
 }
+
+type ClientUser struct {
+	User User   `json:"user"`
+	JWT  string `json:"jwt"`
+}

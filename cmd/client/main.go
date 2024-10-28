@@ -10,6 +10,7 @@ import (
 
 	"github.com/KznRkjp/go-keeper.git/internal/buildinfo"
 	"github.com/KznRkjp/go-keeper.git/internal/encrypt"
+	"github.com/KznRkjp/go-keeper.git/internal/models"
 )
 
 const (
@@ -23,7 +24,26 @@ const (
 
 func main() {
 	buildinfo.PrintBuildVersionDate()
-	fmt.Println("pass")
+	var i int
+	var user models.ClientUser
+	fmt.Println("To register input type 1, to login type 2")
+	fmt.Scan(&i)
+	switch i {
+	case 1:
+		fmt.Println("Enter e-mail")
+		fmt.Scan(&user.User.Email)
+		fmt.Println("Enter password")
+		fmt.Scan(&user.User.Password)
+	case 2:
+		fmt.Println("Enter e-mail")
+		fmt.Scan(&user.User.Email)
+		fmt.Println("Enter password")
+		fmt.Scan(&user.User.Password)
+	default:
+		panic("wrong input")
+	}
+	fmt.Println(user)
+	// fmt.Println(i)
 	key := sha256.Sum256([]byte(password))
 	aesblock, err := aes.NewCipher(key[:])
 	if err != nil {
