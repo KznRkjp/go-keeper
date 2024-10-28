@@ -10,3 +10,9 @@ curl -X POST http://localhost:4443/api/v1/data -H 'Content-Type: application/jso
 Get data:
 curl -X GET http://localhost:4443/api/v1/data -H 'Content-Type: application/json' --cookie "JWT=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAwNzIyMTIsIlVzZXJJRCI6MX0.nkOc-rgXpuIhGlK4GzPEwyQqOxfl1SikPKVxmvcGMu4 -v
 
+DB:
+insert into bank_card (card_number, card_holder_name, expiration_date, go_k_user_id) values('12312','name','exp date soon',1);
+
+insert into binary_data (name, file_name, location, go_k_user_id) values('Best file','file_name.zip','/var/www/files/',1);
+
+insert into text_data (name, text, go_k_user_id) values('Very important note','XXX',1);

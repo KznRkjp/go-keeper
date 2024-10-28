@@ -111,11 +111,11 @@ func GetData(res http.ResponseWriter, req *http.Request) {
 		res.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	if data == nil {
-		mlogger.Info("Data not found")
-		res.WriteHeader(http.StatusNotFound)
-		return
-	}
+	// if data == nil {
+	// 	mlogger.Info("Data not found")
+	// 	res.WriteHeader(http.StatusNotFound)
+	// 	return
+	// }
 	res.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(res).Encode(data)
 }

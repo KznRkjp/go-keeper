@@ -188,7 +188,41 @@ func PostData(data *models.LoginPassword, userId *int, ctx context.Context) erro
 	return nil
 }
 
-func GetData(userId *int, ctx context.Context) ([]models.LoginPassword, error) {
+func GetData(userId *int, ctx context.Context) (models.DBSearchAll, error) {
+	var data models.DBSearchAll
+
+	var errLP error
+	data.LoginPass, errLP = dbSearchLoginPassword(userId, ctx)
+	if errLP != nil {
+		mlogger.Logger.Error(errLP.Error())
+		return data, errLP
+	}
+
+	var errBC error
+	data.BankCards, errBC = dbSearchBankCard(userId, ctx)
+	if errBC != nil {
+		mlogger.Logger.Error(errBC.Error())
+		return data, errBC
+	}
+
+	var errTM error
+	data.TextMsgs, errTM = dbSearchTextMessage(userId, ctx)
+	if errTM != nil {
+		mlogger.Logger.Error(errTM.Error())
+		return data, errTM
+	}
+
+	var errBM error
+	data.BinaryMsgs, errBM = dbSearchBinaryMessages(userId, ctx)
+	if errBM != nil {
+		mlogger.Logger.Error(errBM.Error())
+		return data, errBM
+	}
+
+	return data, nil
+}
+
+func dbSearchLoginPassword(userId *int, ctx context.Context) ([]models.LoginPassword, error) {
 	var data []models.LoginPassword
 	rows, err := db.QueryContext(ctx, "select id, name, login, password, created_at from logopass where go_k_user_id = $1", userId)
 	if err != nil {
@@ -199,7 +233,66 @@ func GetData(userId *int, ctx context.Context) ([]models.LoginPassword, error) {
 	for rows.Next() {
 		var d models.LoginPassword
 		err = rows.Scan(&d.ID, &d.Name, &d.Login, &d.Password, &d.CreatedAt)
-		// err = rows.Scan(&d)
+		if err != nil {
+			mlogger.Logger.Error(err.Error())
+			return nil, err
+		}
+		data = append(data, d)
+	}
+	return data, nil
+}
+
+func dbSearchBankCard(userId *int, ctx context.Context) ([]models.BankCard, error) {
+	var data []models.BankCard
+	rows, err := db.QueryContext(ctx, "select id, card_holder_name, card_number, expiration_date, created_at from bank_card where go_k_user_id = $1", userId)
+	if err != nil {
+		mlogger.Logger.Error(err.Error())
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var d models.BankCard
+		err = rows.Scan(&d.ID, &d.CardHolderName, &d.CardNumber, &d.ExpirationDate, &d.CreatedAt)
+		if err != nil {
+			mlogger.Logger.Error(err.Error())
+			return nil, err
+		}
+		data = append(data, d)
+	}
+	return data, nil
+}
+
+func dbSearchTextMessage(userId *int, ctx context.Context) ([]models.TextMessage, error) {
+	var data []models.TextMessage
+	rows, err := db.QueryContext(ctx, "select id, name, text, created_at from text_data where go_k_user_id = $1", userId)
+	if err != nil {
+		mlogger.Logger.Error(err.Error())
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var d models.TextMessage
+		err = rows.Scan(&d.ID, &d.Name, &d.Text, &d.CreatedAt)
+		if err != nil {
+			mlogger.Logger.Error(err.Error())
+			return nil, err
+		}
+		data = append(data, d)
+	}
+	return data, nil
+}
+
+func dbSearchBinaryMessages(userId *int, ctx context.Context) ([]models.BinaryMessage, error) {
+	var data []models.BinaryMessage
+	rows, err := db.QueryContext(ctx, "select id, name, file_name, location, created_at from binary_data where go_k_user_id = $1", userId)
+	if err != nil {
+		mlogger.Logger.Error(err.Error())
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var d models.BinaryMessage
+		err = rows.Scan(&d.ID, &d.Name, &d.FileName, &d.Location, &d.CreatedAt)
 		if err != nil {
 			mlogger.Logger.Error(err.Error())
 			return nil, err

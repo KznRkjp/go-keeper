@@ -1,6 +1,10 @@
 package encrypt
 
 import (
+	"crypto/aes"
+	"crypto/cipher"
+	"crypto/rand"
+	"crypto/sha256"
 	"fmt"
 	"time"
 
@@ -79,4 +83,77 @@ func HashPassword(password string) (string, error) {
 func VerifyPassword(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
+}
+
+func generateRandom(size int) ([]byte, error) {
+	// генерируем криптостойкие случайные байты в b
+	b := make([]byte, size)
+	_, err := rand.Read(b)
+	if err != nil {
+		return nil, err
+	}
+
+	return b, nil
+}
+
+func EncryptData(password string, message string) ([]byte, error) {
+	src := []byte(message)
+	key := sha256.Sum256([]byte(password))
+	// NewCipher создает и возвращает новый cipher.Block.
+	// Ключевым аргументом должен быть ключ AES, 16, 24 или 32 байта
+	// для выбора AES-128, AES-192 или AES-256.
+	aesblock, err := aes.NewCipher(key[:])
+	if err != nil {
+		fmt.Printf("error: %v\n", err)
+		return nil, err
+	}
+	// NewGCM возвращает заданный 128-битный блочный шифр
+	aesgcm, err := cipher.NewGCM(aesblock)
+	if err != nil {
+		fmt.Printf("error: %v\n", err)
+		return nil, err
+	}
+	// создаём вектор инициализации
+	nonce := key[len(key)-aesgcm.NonceSize():]
+
+	dst := aesgcm.Seal(nil, nonce, src, nil) // зашифровываем
+	fmt.Printf("encrypted: %x\n", dst)
+	return dst, nil
+	// src2, err := aesgcm.Open(nil, nonce, dst, nil) // расшифровываем
+	// if err != nil {
+	//     fmt.Printf("error: %v\n", err)
+	//     return
+	// }
+	// fmt.Printf("decrypted: %s\n", src2)
+}
+
+func DecryptData(password string, message []byte) (string, error) {
+	src := message
+	fmt.Printf("encrypted: %x\n", src)
+	fmt.Println(src)
+	key := sha256.Sum256([]byte(password))
+	// NewCipher создает и возвращает новый cipher.Block.
+	// Ключевым аргументом должен быть ключ AES, 16, 24 или 32 байта
+	// для выбора AES-128, AES-192 или AES-256.
+	aesblock, err := aes.NewCipher(key[:])
+	if err != nil {
+		fmt.Printf("error: %v\n", err)
+		return "", err
+	}
+	// NewGCM возвращает заданный 128-битный блочный шифр
+	aesgcm, err := cipher.NewGCM(aesblock)
+	if err != nil {
+		fmt.Printf("error: %v\n", err)
+		return "", err
+	}
+	// создаём вектор инициализации
+	nonce := key[len(key)-aesgcm.NonceSize():]
+
+	src2, err := aesgcm.Open(nil, nonce, src, nil) // расшифровываем
+	if err != nil {
+		fmt.Printf("error: %v\n", err)
+		return "", err
+	}
+	fmt.Printf("decrypted: %s\n", src2)
+	return string(src2), nil
 }

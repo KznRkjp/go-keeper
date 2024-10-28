@@ -44,3 +44,10 @@ type BinaryMessage struct {
 	Location  string    `json:"location"`
 	CreatedAt time.Time `json:"created_at"`
 }
+
+type DBSearchAll struct {
+	LoginPass  []LoginPassword `json:"login_password_list"`
+	BankCards  []BankCard      `json:"bank_card_list"`
+	TextMsgs   []TextMessage   `json:"text_message_list"`
+	BinaryMsgs []BinaryMessage `json:"binary_message_list"`
+}
