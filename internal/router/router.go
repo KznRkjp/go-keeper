@@ -23,10 +23,10 @@ func Main() chi.Router {
 	r.Delete("/api/v1/data/bc/{id}", gzipper.GzipMiddleware(app.DeleteDataBC))
 	r.Delete("/api/v1/data/txt/{id}", gzipper.GzipMiddleware(app.DeleteDataTxt))
 	r.Delete("/api/v1/data/bm/{id}", gzipper.GzipMiddleware(app.DeleteDataBM))
-	r.Put("/api/v1/data/lp/{id}", gzipper.GzipMiddleware(app.PutDataLP))
-	r.Put("/api/v1/data/bc/{id}", gzipper.GzipMiddleware(app.PutDataBC))
-	r.Put("/api/v1/data/txt/{id}", gzipper.GzipMiddleware(app.PutDataTxt))
-	r.Put("/api/v1/data/bm/{id}", gzipper.GzipMiddleware(app.PutDataBM))
+	r.Put("/api/v1/data/lp", gzipper.GzipMiddleware(app.PutDataLP))
+	r.Put("/api/v1/data/bc", gzipper.GzipMiddleware(app.PutDataBC))
+	r.Put("/api/v1/data/txt", gzipper.GzipMiddleware(app.PutDataTxt))
+	r.Put("/api/v1/data/bm", gzipper.GzipMiddleware(app.PutDataBM))
 	r.Get("/api/v1/data", gzipper.GzipMiddleware(app.GetData))
 	return r
 }
