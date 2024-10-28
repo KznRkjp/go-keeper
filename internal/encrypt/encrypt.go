@@ -3,7 +3,6 @@ package encrypt
 import (
 	"crypto/aes"
 	"crypto/cipher"
-	"crypto/rand"
 	"crypto/sha256"
 	"fmt"
 	"time"
@@ -85,16 +84,16 @@ func VerifyPassword(password, hash string) bool {
 	return err == nil
 }
 
-func generateRandom(size int) ([]byte, error) {
-	// генерируем криптостойкие случайные байты в b
-	b := make([]byte, size)
-	_, err := rand.Read(b)
-	if err != nil {
-		return nil, err
-	}
+// func generateRandom(size int) ([]byte, error) {
+// 	// генерируем криптостойкие случайные байты в b
+// 	b := make([]byte, size)
+// 	_, err := rand.Read(b)
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	return b, nil
-}
+// 	return b, nil
+// }
 
 func EncryptData(password string, message string) ([]byte, error) {
 	src := []byte(message)
@@ -119,12 +118,6 @@ func EncryptData(password string, message string) ([]byte, error) {
 	dst := aesgcm.Seal(nil, nonce, src, nil) // зашифровываем
 	fmt.Printf("encrypted: %x\n", dst)
 	return dst, nil
-	// src2, err := aesgcm.Open(nil, nonce, dst, nil) // расшифровываем
-	// if err != nil {
-	//     fmt.Printf("error: %v\n", err)
-	//     return
-	// }
-	// fmt.Printf("decrypted: %s\n", src2)
 }
 
 func DecryptData(password string, message []byte) (string, error) {

@@ -72,8 +72,9 @@ func PostLoginUser(res http.ResponseWriter, req *http.Request) {
 	res.WriteHeader(http.StatusOK)
 }
 
-func PostData(res http.ResponseWriter, req *http.Request) {
-	mlogger.Info("Posting data")
+// PostData - handler для /api/v1/data/lp - добаляает данные login password в базу.
+func PostDataLP(res http.ResponseWriter, req *http.Request) {
+	mlogger.Info("Posting data - LP")
 	userId := checkCookie(req)
 	if userId == 0 {
 		mlogger.Info("User not found")
@@ -88,7 +89,7 @@ func PostData(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	// data.UserID = userId
-	err = database.PostData(&data, &userId, req.Context())
+	err = database.PostDataLP(&data, &userId, req.Context())
 	if err != nil {
 		mlogger.Info(err.Error())
 		res.WriteHeader(http.StatusInternalServerError)
@@ -97,6 +98,83 @@ func PostData(res http.ResponseWriter, req *http.Request) {
 	res.WriteHeader(http.StatusCreated)
 }
 
+// PostData - handler для /api/v1/data/bc - добаляает данные bank card в базу.
+func PostDataBC(res http.ResponseWriter, req *http.Request) {
+	mlogger.Info("Posting data - Bank Card")
+	userId := checkCookie(req)
+	if userId == 0 {
+		mlogger.Info("User not found")
+		res.WriteHeader(http.StatusNotFound)
+		return
+	}
+	var data models.BankCard
+	dec := json.NewDecoder(req.Body)
+	err := dec.Decode(&data)
+	if err != nil {
+		http.Error(res, "can't decode body", http.StatusBadRequest)
+		return
+	}
+	err = database.PostDataBC(&data, &userId, req.Context())
+	if err != nil {
+		mlogger.Info(err.Error())
+		res.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	res.WriteHeader(http.StatusCreated)
+	// data.User
+}
+
+// PostData - handler для /api/v1/data/txt - добаляает данные text в базу.
+func PostDataTxt(res http.ResponseWriter, req *http.Request) {
+	mlogger.Info("Posting data - Text")
+	userId := checkCookie(req)
+	if userId == 0 {
+		mlogger.Info("User not found")
+		res.WriteHeader(http.StatusNotFound)
+		return
+	}
+	var data models.TextMessage
+	dec := json.NewDecoder(req.Body)
+	err := dec.Decode(&data)
+	if err != nil {
+		http.Error(res, "can't decode body", http.StatusBadRequest)
+		return
+	}
+	err = database.PostDataTxt(&data, &userId, req.Context())
+	if err != nil {
+		mlogger.Info(err.Error())
+		res.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	res.WriteHeader(http.StatusCreated)
+}
+
+func PostDataBM(res http.ResponseWriter, req *http.Request) {
+	mlogger.Info("Posting data - Binary Message")
+	userId := checkCookie(req)
+	if userId == 0 {
+		mlogger.Info("User not found")
+		res.WriteHeader(http.StatusNotFound)
+		return
+	}
+	var data models.BinaryMessage
+	dec := json.NewDecoder(req.Body)
+	err := dec.Decode(&data)
+	if err != nil {
+		http.Error(res, "can't decode body", http.StatusBadRequest)
+		return
+	}
+	err = database.PostDataBM(&data, &userId, req.Context())
+	if err != nil {
+		mlogger.Info(err.Error())
+		res.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	res.WriteHeader(http.StatusCreated)
+
+}
+
+// GetData - handler для /api/v1/data - получает ВСЕ данные из базы.
 func GetData(res http.ResponseWriter, req *http.Request) {
 	mlogger.Info("Getting data")
 	userId := checkCookie(req)
@@ -138,6 +216,8 @@ func createCookie(res *http.ResponseWriter, user *models.User) {
 	http.SetCookie(*res, &cookie)
 }
 
+// вспомогательная функция проверки куки и полчения из него ID пользователя
+// надо конечно во wrapper, но что получилось - то получилось
 func checkCookie(req *http.Request) int {
 	mlogger.Info("Checking cookie")
 

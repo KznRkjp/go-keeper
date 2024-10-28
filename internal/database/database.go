@@ -40,21 +40,23 @@ func createInitialDB(db *sql.DB) error {
 
 	//что бы не забыть как запускать
 	mlogger.Info("DB String" + flags.FlagDBString)
+	var err error
 
 	//START ########## Таблица пользователей
 	insertDynStmtUsers := `CREATE TABLE go_k_users (id SERIAL PRIMARY KEY, 
 											email text not null unique,
 											password TEXT,
 											created_at timestamp default current_timestamp);`
-	var err error
-	_, err = db.Exec(insertDynStmtUsers)
+	// var errUsers error
+	_, errUsers := db.Exec(insertDynStmtUsers)
 	time.Sleep(time.Second * 1)
-	if err.Error() == "ERROR: relation \"go_k_users\" already exists (SQLSTATE 42P07)" {
-		err = nil
+	if errUsers.Error() == "ERROR: relation \"go_k_users\" already exists (SQLSTATE 42P07)" {
+		errUsers = nil
 		mlogger.Info("Table go_k_users already exists")
 	}
-	if err != nil {
-		log.Fatal(err)
+	if errUsers != nil {
+		log.Fatal(errUsers)
+		err = errUsers
 	}
 
 	//STOP ########## Таблица пользователей
@@ -67,15 +69,17 @@ func createInitialDB(db *sql.DB) error {
 											go_k_user_id INTEGER,
 											created_at timestamp default current_timestamp,
 											CONSTRAINT fk_go_k_user_id FOREIGN KEY (go_k_user_id) REFERENCES go_k_users (id));`
-	_, err = db.Exec(insertDynStmtLogopass)
-	if err.Error() == "ERROR: relation \"logopass\" already exists (SQLSTATE 42P07)" {
-		err = nil
+	// var errLP error
+	_, errLP := db.Exec(insertDynStmtLogopass)
+	if errLP.Error() == "ERROR: relation \"logopass\" already exists (SQLSTATE 42P07)" {
+		errLP = nil
 		mlogger.Info("Table logopass already exists")
 	}
-	if err != nil {
-		log.Fatal(err)
+	if errLP != nil {
+		log.Fatal(errLP)
+		err = errLP
 	}
-	// time.Sleep(time.Second * 1)
+	time.Sleep(time.Second * 1)
 	//STOP ######### Таблица учетных данных - логопас
 
 	//START ######### Таблица учетных данных - банковские карты
@@ -86,35 +90,38 @@ func createInitialDB(db *sql.DB) error {
 											go_k_user_id INTEGER,
 											created_at timestamp default current_timestamp,
 											CONSTRAINT fk_go_k_user_id FOREIGN KEY (go_k_user_id) REFERENCES go_k_users (id));`
-	_, err = db.Exec(insertDynStmtBankCard)
+	_, errBC := db.Exec(insertDynStmtBankCard)
 	time.Sleep(time.Second * 1)
 
-	if err.Error() == "ERROR: relation \"bank_card\" already exists (SQLSTATE 42P07)" {
-		err = nil
+	if errBC.Error() == "ERROR: relation \"bank_card\" already exists (SQLSTATE 42P07)" {
+		errBC = nil
 		mlogger.Info("Table bank_card already exists")
 	}
-	if err != nil {
-		mlogger.Logger.Fatal(err.Error())
-
+	if errBC != nil {
+		mlogger.Logger.Fatal(errBC.Error())
+		err = errBC
 	}
 	//STOP ######### Таблица учетных данных - банковские карты
 
 	// START ######### Таблица текстовых данных
+
 	insertDynStmtTextData := `CREATE TABLE text_data (id SERIAL PRIMARY KEY,
 											name TEXT,
 		 									text TEXT,
 											go_k_user_id INTEGER,
 											created_at timestamp default current_timestamp,
 											CONSTRAINT fk_go_k_user_id FOREIGN KEY (go_k_user_id) REFERENCES go_k_users (id));`
-	_, err = db.Exec(insertDynStmtTextData)
+	_, errTXT := db.Exec(insertDynStmtTextData)
 	// time.Sleep(time.Second * 1)
-	if err.Error() == "ERROR: relation \"text_data\" already exists (SQLSTATE 42P07)" {
-		err = nil
+	if errTXT.Error() == "ERROR: relation \"text_data\" already exists (SQLSTATE 42P07)" {
+		errTXT = nil
 		mlogger.Info("Table text_data already exists")
 	}
-	if err != nil {
-		log.Fatal(err)
+	if errTXT != nil {
+		log.Fatal(errTXT)
+		err = errTXT
 	}
+
 	// STOP ######### Таблица текстовых данных
 
 	// START ######### Таблица бинарных данных
@@ -125,20 +132,22 @@ func createInitialDB(db *sql.DB) error {
 											go_k_user_id INTEGER,
 											created_at timestamp default current_timestamp,
 											CONSTRAINT fk_go_k_user_id FOREIGN KEY (go_k_user_id) REFERENCES go_k_users (id));`
-	_, err = db.Exec(insertDynStmtBinaryData)
+	_, errBin := db.Exec(insertDynStmtBinaryData)
 	// time.Sleep(time.Second * 1)
-	if err.Error() == "ERROR: relation \"binary_data\" already exists (SQLSTATE 42P07)" {
-		err = nil
+	if errBin.Error() == "ERROR: relation \"binary_data\" already exists (SQLSTATE 42P07)" {
+		errBin = nil
 		mlogger.Info("Table binary_data already exists")
 	}
-	if err != nil {
-		log.Fatal(err)
+	if errBin != nil {
+		log.Fatal(errBin)
+		err = errBin
 	}
 	// STOP ######### Таблица бинарных данных
 
 	return err
 }
 
+// RegisterUser - регистрация нового пользователя
 func RegisterUser(user *models.User, ctx context.Context) (*models.User, error) {
 	insertDynStmt := `insert into "go_k_users"("email", "password") values($1, $2)`
 	password, err := encrypt.HashPassword(user.Password)
@@ -155,6 +164,7 @@ func RegisterUser(user *models.User, ctx context.Context) (*models.User, error) 
 	return returnUser(user.Email)
 }
 
+// LoginUser - проверка пароля пользователя, если ок - выдача его ID
 func LoginUser(user *models.User, ctx context.Context) (*models.User, error) {
 	db_user, err := returnUser(user.Email)
 	if err != nil {
@@ -169,6 +179,7 @@ func LoginUser(user *models.User, ctx context.Context) (*models.User, error) {
 	return db_user, nil
 }
 
+// returnUser - вспомогатеьная функция для получения ID пользователя по email
 func returnUser(email string) (*models.User, error) {
 	var user models.User
 	err := db.QueryRow("select * from go_k_users where email = $1", email).Scan(&user.ID, &user.Email, &user.Password, &user.CreatedAt)
@@ -178,16 +189,7 @@ func returnUser(email string) (*models.User, error) {
 	return &user, nil
 }
 
-func PostData(data *models.LoginPassword, userId *int, ctx context.Context) error {
-	insertDynStmt := `insert into "logopass"("name", "login", "password","go_k_user_id") values($1, $2, $3, $4)`
-	_, err := db.ExecContext(ctx, insertDynStmt, data.Name, data.Login, data.Password, userId)
-	if err != nil {
-		mlogger.Logger.Error(err.Error())
-		return err
-	}
-	return nil
-}
-
+// GetData -  возвращает ВСЕ данные.
 func GetData(userId *int, ctx context.Context) (models.DBSearchAll, error) {
 	var data models.DBSearchAll
 
@@ -219,85 +221,5 @@ func GetData(userId *int, ctx context.Context) (models.DBSearchAll, error) {
 		return data, errBM
 	}
 
-	return data, nil
-}
-
-func dbSearchLoginPassword(userId *int, ctx context.Context) ([]models.LoginPassword, error) {
-	var data []models.LoginPassword
-	rows, err := db.QueryContext(ctx, "select id, name, login, password, created_at from logopass where go_k_user_id = $1", userId)
-	if err != nil {
-		mlogger.Logger.Error(err.Error())
-		return nil, err
-	}
-	defer rows.Close()
-	for rows.Next() {
-		var d models.LoginPassword
-		err = rows.Scan(&d.ID, &d.Name, &d.Login, &d.Password, &d.CreatedAt)
-		if err != nil {
-			mlogger.Logger.Error(err.Error())
-			return nil, err
-		}
-		data = append(data, d)
-	}
-	return data, nil
-}
-
-func dbSearchBankCard(userId *int, ctx context.Context) ([]models.BankCard, error) {
-	var data []models.BankCard
-	rows, err := db.QueryContext(ctx, "select id, card_holder_name, card_number, expiration_date, created_at from bank_card where go_k_user_id = $1", userId)
-	if err != nil {
-		mlogger.Logger.Error(err.Error())
-		return nil, err
-	}
-	defer rows.Close()
-	for rows.Next() {
-		var d models.BankCard
-		err = rows.Scan(&d.ID, &d.CardHolderName, &d.CardNumber, &d.ExpirationDate, &d.CreatedAt)
-		if err != nil {
-			mlogger.Logger.Error(err.Error())
-			return nil, err
-		}
-		data = append(data, d)
-	}
-	return data, nil
-}
-
-func dbSearchTextMessage(userId *int, ctx context.Context) ([]models.TextMessage, error) {
-	var data []models.TextMessage
-	rows, err := db.QueryContext(ctx, "select id, name, text, created_at from text_data where go_k_user_id = $1", userId)
-	if err != nil {
-		mlogger.Logger.Error(err.Error())
-		return nil, err
-	}
-	defer rows.Close()
-	for rows.Next() {
-		var d models.TextMessage
-		err = rows.Scan(&d.ID, &d.Name, &d.Text, &d.CreatedAt)
-		if err != nil {
-			mlogger.Logger.Error(err.Error())
-			return nil, err
-		}
-		data = append(data, d)
-	}
-	return data, nil
-}
-
-func dbSearchBinaryMessages(userId *int, ctx context.Context) ([]models.BinaryMessage, error) {
-	var data []models.BinaryMessage
-	rows, err := db.QueryContext(ctx, "select id, name, file_name, location, created_at from binary_data where go_k_user_id = $1", userId)
-	if err != nil {
-		mlogger.Logger.Error(err.Error())
-		return nil, err
-	}
-	defer rows.Close()
-	for rows.Next() {
-		var d models.BinaryMessage
-		err = rows.Scan(&d.ID, &d.Name, &d.FileName, &d.Location, &d.CreatedAt)
-		if err != nil {
-			mlogger.Logger.Error(err.Error())
-			return nil, err
-		}
-		data = append(data, d)
-	}
 	return data, nil
 }
