@@ -4,11 +4,14 @@ curl -X POST http://localhost:4443/api/v1/register -H 'Content-Type: application
 Login:
 curl -X POST http://localhost:4443/api/v1/login -H 'Content-Type: application/json' -d '{"email":"john@ne.doe","password":"my_password"}' -v
 
-Post data:
-curl -X POST http://localhost:4443/api/v1/data -H 'Content-Type: application/json' -d '{"name":"my_first_logopass","login":"john123", "password":"secretpass"}' --cookie "JWT=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAwNzIyMTIsIlVzZXJJRCI6MX0.nkOc-rgXpuIhGlK4GzPEwyQqOxfl1SikPKVxmvcGMu4" -v
+Post data LP:
+curl -X POST http://localhost:4443/api/v1/data/lp -H 'Content-Type: application/json' -d '{"name":"my_first_logopass","login":"john123", "password":"secretpass"}' --cookie "JWT=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAxNDM1NTAsIlVzZXJJRCI6MX0.HXGMBmXutpnY0ynyfGD6vAF34PCVIa56vknjWqEtm_A" -v
 
 Get data:
-curl -X GET http://localhost:4443/api/v1/data -H 'Content-Type: application/json' --cookie "JWT=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAwNzIyMTIsIlVzZXJJRCI6MX0.nkOc-rgXpuIhGlK4GzPEwyQqOxfl1SikPKVxmvcGMu4 -v
+curl -X GET http://localhost:4443/api/v1/data -H 'Content-Type: application/json' --cookie "JWT=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAxNDM1NTAsIlVzZXJJRCI6MX0.HXGMBmXutpnY0ynyfGD6vAF34PCVIa56vknjWqEtm_A" -v
+
+Delete data:
+curl -X DELETE http://localhost:4443/api/v1/data/lp/2 --cookie "JWT=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAxNDM1NTAsIlVzZXJJRCI6MX0.HXGMBmXutpnY0ynyfGD6vAF34PCVIa56vknjWqEtm_A" -v
 
 DB:
 insert into bank_card (card_number, card_holder_name, expiration_date, go_k_user_id) values('12312','name','exp date soon',1);
