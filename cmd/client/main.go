@@ -38,6 +38,7 @@ func main() {
 	config.Client.ServerAddress = "http://localhost:4443"
 	config.Client.URI.RegisterUser = "/api/v1/register"
 	config.Client.URI.LoginUser = "/api/v1/login"
+	config.Client.URI.GetData = "/api/v1/data"
 	//***
 	buildinfo.PrintBuildVersionDate()
 	var i int
@@ -61,6 +62,7 @@ func main() {
 	default:
 		panic("wrong input")
 	}
+	clientapp.GetData(&User)
 	fmt.Println(User)
 	// fmt.Println(i)
 	key := sha256.Sum256([]byte(password))

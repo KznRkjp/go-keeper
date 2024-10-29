@@ -58,3 +58,17 @@ func LoginUser(user *models.ClientUser) error {
 	mlogger.Info(err.Error())
 	return err
 }
+
+func GetData(user *models.ClientUser) error {
+	url := config.Client.ServerAddress + config.Client.URI.GetData
+	cookie := &http.Cookie{
+		Name:  "JWT",
+		Value: user.JWT,
+	}
+	resp, err := http.Get(url)
+	if err != nil {
+		mlogger.Info(err.Error())
+	}
+	fmt.Println(resp)
+	return nil
+}
