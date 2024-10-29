@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/KznRkjp/go-keeper.git/internal/config"
 	"github.com/KznRkjp/go-keeper.git/internal/middleware/mlogger"
 	"github.com/KznRkjp/go-keeper.git/internal/models"
 )
@@ -13,7 +14,7 @@ import (
 //curl -X POST http://localhost:4443/api/v1/register -H 'Content-Type: application/json' -d '{"email":"john@ne.doe","password":"my_password"}'
 
 func RegisterUser(user *models.ClientUser) error {
-	url := "http://localhost:4443/api/v1/register"
+	url := config.Client.ServerAddress + config.Client.URI.RegisterUser
 	// k := fmt.Sprintf(`{"email":"%s","password":"%s"}`, user.User.Email, user.User.Password)
 	json := []byte(fmt.Sprintf(`{"email":"%s","password":"%s"}`, user.User.Email, user.User.Password))
 	fmt.Println(json)

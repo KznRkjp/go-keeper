@@ -10,6 +10,7 @@ import (
 
 	"github.com/KznRkjp/go-keeper.git/internal/buildinfo"
 	clientapp "github.com/KznRkjp/go-keeper.git/internal/client-app"
+	"github.com/KznRkjp/go-keeper.git/internal/config"
 	"github.com/KznRkjp/go-keeper.git/internal/encrypt"
 	"github.com/KznRkjp/go-keeper.git/internal/models"
 )
@@ -26,6 +27,10 @@ const (
 var User models.ClientUser
 
 func main() {
+	// **** пока так
+	config.Client.ServerAddress = "http://localhost:4443"
+	config.Client.URI.RegisterUser = "/api/v1/register"
+	//***
 	buildinfo.PrintBuildVersionDate()
 	var i int
 	// var user models.ClientUser

@@ -40,7 +40,7 @@ func DeleteDataBC(res http.ResponseWriter, req *http.Request) {
 
 	err := database.DeleteDataBC(&recordId, &userId, req.Context())
 	if err != nil {
-		mlogger.Info(err.Error())
+		mlogger.Info("failed to delete the payment card data: " + err.Error())
 		res.WriteHeader(http.StatusInternalServerError)
 		return
 	}

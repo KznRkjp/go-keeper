@@ -7,10 +7,22 @@ import (
 	"os"
 )
 
+var Client ClientConfig
+
 // Стуркрута для разбора файла конфигурации
 type Config struct {
 	ServerAddress string `json:"server_address"`
 	DatabaseDSN   string `json:"database_dsn"`
+}
+
+type ClientURI struct {
+	RegisterUser string `json:"register_user"`
+	LoginUser    string `json:"login_user"`
+	GetData      string `json:"get_data"`
+}
+type ClientConfig struct {
+	ServerAddress string    `json:"server_address"`
+	URI           ClientURI `json:"uri"`
 }
 
 // func main() {
