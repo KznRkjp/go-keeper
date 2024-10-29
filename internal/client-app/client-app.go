@@ -13,6 +13,7 @@ import (
 	"github.com/KznRkjp/go-keeper.git/internal/config"
 	"github.com/KznRkjp/go-keeper.git/internal/middleware/mlogger"
 	"github.com/KznRkjp/go-keeper.git/internal/models"
+	"github.com/KznRkjp/go-keeper.git/internal/prettyprint"
 )
 
 //curl -X POST http://localhost:4443/api/v1/register -H 'Content-Type: application/json' -d '{"email":"john@ne.doe","password":"my_password"}'
@@ -78,6 +79,7 @@ func GetData(user *models.ClientUser) error {
 	// defer resp.Close()
 	fmt.Println("###############")
 	fmt.Println(data)
+	prettyprint.PrintLP(data.LoginPass)
 	fmt.Println("###############")
 	return nil
 }
