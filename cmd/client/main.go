@@ -23,29 +23,31 @@ const (
 		`be55d1079e6c6167118ac91318fe`
 )
 
+var User models.ClientUser
+
 func main() {
 	buildinfo.PrintBuildVersionDate()
 	var i int
-	var user models.ClientUser
+	// var user models.ClientUser
 	fmt.Println("To register input type 1, to login type 2")
 	fmt.Scan(&i)
 	switch i {
 	case 1:
 		fmt.Println("Enter e-mail")
-		fmt.Scan(&user.User.Email)
+		fmt.Scan(&User.User.Email)
 		fmt.Println("Enter password")
-		fmt.Scan(&user.User.Password)
-		clientapp.RegisterUser(&user)
-		fmt.Println(user)
+		fmt.Scan(&User.User.Password)
+		clientapp.RegisterUser(&User)
+		fmt.Println(User)
 	case 2:
 		fmt.Println("Enter e-mail")
-		fmt.Scan(&user.User.Email)
+		fmt.Scan(&User.User.Email)
 		fmt.Println("Enter password")
-		fmt.Scan(&user.User.Password)
+		fmt.Scan(&User.User.Password)
 	default:
 		panic("wrong input")
 	}
-	fmt.Println(user)
+	fmt.Println(User)
 	// fmt.Println(i)
 	key := sha256.Sum256([]byte(password))
 	aesblock, err := aes.NewCipher(key[:])
