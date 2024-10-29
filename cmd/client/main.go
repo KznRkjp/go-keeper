@@ -36,6 +36,7 @@ func main() {
 		fmt.Println("Enter password")
 		fmt.Scan(&user.User.Password)
 		clientapp.RegisterUser(&user)
+		fmt.Println(user)
 	case 2:
 		fmt.Println("Enter e-mail")
 		fmt.Scan(&user.User.Email)
