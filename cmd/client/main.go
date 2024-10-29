@@ -12,7 +12,9 @@ import (
 	clientapp "github.com/KznRkjp/go-keeper.git/internal/client-app"
 	"github.com/KznRkjp/go-keeper.git/internal/config"
 	"github.com/KznRkjp/go-keeper.git/internal/encrypt"
+	"github.com/KznRkjp/go-keeper.git/internal/middleware/mlogger"
 	"github.com/KznRkjp/go-keeper.git/internal/models"
+	"go.uber.org/zap"
 )
 
 const (
@@ -27,9 +29,15 @@ const (
 var User models.ClientUser
 
 func main() {
+	mlogger.Debug = true
+	//создаем экземпляр логгера
+	mlogger.Logger = zap.Must(zap.NewProduction())
+	defer mlogger.Logger.Sync()
+
 	// **** пока так
 	config.Client.ServerAddress = "http://localhost:4443"
 	config.Client.URI.RegisterUser = "/api/v1/register"
+	config.Client.URI.LoginUser = "/api/v1/login"
 	//***
 	buildinfo.PrintBuildVersionDate()
 	var i int
@@ -49,6 +57,7 @@ func main() {
 		fmt.Scan(&User.User.Email)
 		fmt.Println("Enter password")
 		fmt.Scan(&User.User.Password)
+		clientapp.LoginUser(&User)
 	default:
 		panic("wrong input")
 	}

@@ -17,7 +17,29 @@ func RegisterUser(user *models.ClientUser) error {
 	url := config.Client.ServerAddress + config.Client.URI.RegisterUser
 	// k := fmt.Sprintf(`{"email":"%s","password":"%s"}`, user.User.Email, user.User.Password)
 	json := []byte(fmt.Sprintf(`{"email":"%s","password":"%s"}`, user.User.Email, user.User.Password))
-	fmt.Println(json)
+	// fmt.Println(json)
+	resp, err := http.Post(url, "application/json", bytes.NewBuffer(json))
+	if err != nil {
+		mlogger.Info(err.Error())
+		return err
+	}
+	for _, c := range resp.Cookies() {
+		if c.Name == "JWT" {
+			// fmt.Println(c.Value)
+			user.JWT = c.Value
+			mlogger.Info("Got cookie for user: " + user.JWT)
+			return nil
+		}
+	}
+	err = errors.New("no cookie")
+	mlogger.Info(err.Error())
+	return err
+}
+
+func LoginUser(user *models.ClientUser) error {
+	url := config.Client.ServerAddress + config.Client.URI.LoginUser
+	json := []byte(fmt.Sprintf(`{"email":"%s","password":"%s"}`, user.User.Email, user.User.Password))
+	// fmt.Println(json)
 	resp, err := http.Post(url, "application/json", bytes.NewBuffer(json))
 	if err != nil {
 		mlogger.Info(err.Error())
@@ -27,7 +49,8 @@ func RegisterUser(user *models.ClientUser) error {
 		if c.Name == "JWT" {
 			fmt.Println(c.Value)
 			user.JWT = c.Value
-			mlogger.Info("Got cookie for user: " + user.JWT)
+			fmt.Println(user.JWT)
+			mlogger.Info("Got cookie for user: " + string(user.JWT))
 			return nil
 		}
 	}
