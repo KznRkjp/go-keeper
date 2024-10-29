@@ -2,9 +2,13 @@ package clientapp
 
 import (
 	"bytes"
+	"compress/gzip"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
+	"strconv"
 
 	"github.com/KznRkjp/go-keeper.git/internal/config"
 	"github.com/KznRkjp/go-keeper.git/internal/middleware/mlogger"
@@ -61,14 +65,53 @@ func LoginUser(user *models.ClientUser) error {
 
 func GetData(user *models.ClientUser) error {
 	url := config.Client.ServerAddress + config.Client.URI.GetData
-	cookie := &http.Cookie{
-		Name:  "JWT",
-		Value: user.JWT,
+	resp, err := HTTPwithCookiesGet(url, user)
+	if err != nil {
+		return err
 	}
-	resp, err := http.Get(url)
+	var data models.DBSearchAll
+	err = json.Unmarshal(resp, &data)
 	if err != nil {
 		mlogger.Info(err.Error())
+		return err
 	}
-	fmt.Println(resp)
+	// defer resp.Close()
+	fmt.Println("###############")
+	fmt.Println(data)
+	fmt.Println("###############")
 	return nil
+}
+
+func HTTPwithCookiesGet(url string, user *models.ClientUser) ([]byte, error) {
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	req.AddCookie(&http.Cookie{Name: "JWT", Value: user.JWT})
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	var body []byte
+
+	reader, err := gzip.NewReader(resp.Body)
+	if err != nil {
+		panic(err)
+	}
+	defer reader.Close()
+	body, err = io.ReadAll(reader)
+	if err != nil {
+		panic(err)
+	}
+
+	if resp.StatusCode != 200 {
+		err = errors.New(url +
+			"\nresp.StatusCode: " + strconv.Itoa(resp.StatusCode))
+		return nil, err
+	}
+
+	return body, err
 }
