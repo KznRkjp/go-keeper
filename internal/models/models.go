@@ -24,26 +24,26 @@ type LoginPassword struct {
 // Хранимые данные пользователя - банковская карта
 type BankCard struct {
 	ID             int64     `json:"id"`
-	CardHolderName string    `json:"card_holder_name"`
-	CardNumber     string    `json:"card_number"`
-	ExpirationDate string    `json:"expiration_date"`
+	CardHolderName []byte    `json:"card_holder_name"`
+	CardNumber     []byte    `json:"card_number"`
+	ExpirationDate []byte    `json:"expiration_date"`
 	CreatedAt      time.Time `json:"created_at"`
 }
 
 // Хранимые данные пользователя - текстовое сообщение
 type TextMessage struct {
 	ID        int64     `json:"id"`
-	Name      string    `json:"name"`
-	Text      string    `json:"text"`
+	Name      []byte    `json:"name"`
+	Text      []byte    `json:"text"`
 	CreatedAt time.Time `json:"created_at"`
 }
 
 // Хранимые данные пользователя - двоичное сообщение
 type BinaryMessage struct {
 	ID        int64     `json:"id"`
-	Name      string    `json:"name"`
-	FileName  string    `json:"file_name"`
-	Location  string    `json:"location"`
+	Name      []byte    `json:"name"`
+	FileName  []byte    `json:"file_name"`
+	Location  []byte    `json:"location"`
 	CreatedAt time.Time `json:"created_at"`
 }
 
