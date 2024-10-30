@@ -16,13 +16,14 @@ import (
 	"github.com/KznRkjp/go-keeper.git/internal/prettyprint"
 )
 
-//curl -X POST http://localhost:4443/api/v1/register -H 'Content-Type: application/json' -d '{"email":"john@ne.doe","password":"my_password"}'
+// curl -X POST http://localhost:4443/api/v1/register -H 'Content-Type: application/json' -d '{"email":"john@ne.doe","password":"my_password"}'
+// k := fmt.Sprintf(`{"email":"%s","password":"%s"}`, user.User.Email, user.User.Password)
+var UserData models.DBSearchAll
 
 func RegisterUser(user *models.ClientUser) error {
 	url := config.Client.ServerAddress + config.Client.URI.RegisterUser
-	// k := fmt.Sprintf(`{"email":"%s","password":"%s"}`, user.User.Email, user.User.Password)
+
 	json := []byte(fmt.Sprintf(`{"email":"%s","password":"%s"}`, user.User.Email, user.User.Password))
-	// fmt.Println(json)
 	resp, err := http.Post(url, "application/json", bytes.NewBuffer(json))
 	if err != nil {
 		mlogger.Info(err.Error())
@@ -30,7 +31,6 @@ func RegisterUser(user *models.ClientUser) error {
 	}
 	for _, c := range resp.Cookies() {
 		if c.Name == "JWT" {
-			// fmt.Println(c.Value)
 			user.JWT = c.Value
 			mlogger.Info("Got cookie for user: " + user.JWT)
 			return nil
@@ -44,7 +44,6 @@ func RegisterUser(user *models.ClientUser) error {
 func LoginUser(user *models.ClientUser) error {
 	url := config.Client.ServerAddress + config.Client.URI.LoginUser
 	json := []byte(fmt.Sprintf(`{"email":"%s","password":"%s"}`, user.User.Email, user.User.Password))
-	// fmt.Println(json)
 	resp, err := http.Post(url, "application/json", bytes.NewBuffer(json))
 	if err != nil {
 		mlogger.Info(err.Error())
@@ -52,9 +51,7 @@ func LoginUser(user *models.ClientUser) error {
 	}
 	for _, c := range resp.Cookies() {
 		if c.Name == "JWT" {
-			fmt.Println(c.Value)
 			user.JWT = c.Value
-			fmt.Println(user.JWT)
 			mlogger.Info("Got cookie for user: " + string(user.JWT))
 			return nil
 		}
@@ -70,16 +67,15 @@ func GetData(user *models.ClientUser) error {
 	if err != nil {
 		return err
 	}
-	var data models.DBSearchAll
-	err = json.Unmarshal(resp, &data)
+
+	err = json.Unmarshal(resp, &UserData)
 	if err != nil {
 		mlogger.Info(err.Error())
 		return err
 	}
 	// defer resp.Close()
 	fmt.Println("###############")
-	fmt.Println(data)
-	prettyprint.PrintLP(data.LoginPass)
+	prettyprint.PrintLP(UserData.LoginPass)
 	fmt.Println("###############")
 	return nil
 }
