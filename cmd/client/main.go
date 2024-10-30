@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/KznRkjp/go-keeper.git/internal/buildinfo"
-	clientapp "github.com/KznRkjp/go-keeper.git/internal/client-app"
+	"github.com/KznRkjp/go-keeper.git/internal/clientapp"
 	"github.com/KznRkjp/go-keeper.git/internal/config"
 	"github.com/KznRkjp/go-keeper.git/internal/encrypt"
 	"github.com/KznRkjp/go-keeper.git/internal/middleware/mlogger"
@@ -26,6 +26,7 @@ func main() {
 	config.Client.URI.RegisterUser = "/api/v1/register"
 	config.Client.URI.LoginUser = "/api/v1/login"
 	config.Client.URI.GetData = "/api/v1/data"
+	config.Client.URI.PostLP = "/api/v1/data/lp"
 	//***
 
 	fmt.Println("go-keeper-client")

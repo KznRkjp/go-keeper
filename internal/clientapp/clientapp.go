@@ -112,3 +112,63 @@ func HTTPwithCookiesGet(url string, user *models.ClientUser) ([]byte, error) {
 
 	return body, err
 }
+
+func HTTPwithCookiesPost(url string, user *models.ClientUser, data []byte) ([]byte, error) {
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(data))
+	if err != nil {
+		return nil, err
+	}
+
+	req.AddCookie(&http.Cookie{Name: "JWT", Value: user.JWT})
+	req.Header.Add("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	// var body []byte
+
+	// reader, err := gzip.NewReader(resp.Body)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// defer reader.Close()
+	// body, err = io.ReadAll(reader)
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	if resp.StatusCode != 201 {
+		err = errors.New(url +
+			"\nresp.StatusCode: " + strconv.Itoa(resp.StatusCode))
+		return nil, err
+	}
+
+	return nil, nil
+}
+
+func PostDataLP(user *models.ClientUser, data *models.LoginPassword) error {
+	url := config.Client.ServerAddress + config.Client.URI.PostLP
+	json, err := json.Marshal(data)
+	if err != nil {
+		mlogger.Info(err.Error())
+		return err
+	}
+	resp, err := HTTPwithCookiesPost(url, user, json)
+	if err != nil {
+		mlogger.Info(err.Error())
+		return err
+	}
+	fmt.Println(string(resp))
+	return nil
+}
+
+// err = json.Unmarshal(resp, &UserData)
+// if err != nil {
+// 	mlogger.Info(err.Error())
+// 	return err
+// }
+// // defer resp.Close()
+// fmt.Println("###############")
+// prettyprint)

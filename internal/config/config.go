@@ -19,6 +19,7 @@ type ClientURI struct {
 	RegisterUser string `json:"register_user"`
 	LoginUser    string `json:"login_user"`
 	GetData      string `json:"get_data"`
+	PostLP       string `json:"post_lp"`
 }
 type ClientConfig struct {
 	ServerAddress string    `json:"server_address"`
