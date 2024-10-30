@@ -55,7 +55,7 @@ func main() {
 
 	if HTTPS {
 		go func() {
-			mlogger.Logger.Info("Server started", zap.String("address:", flags.FlagRunAddr))
+			mlogger.Logger.Info("Server started ", zap.String("address: https://", flags.FlagRunAddr))
 			err := server.ListenAndServeTLS("server.crt", "server.key")
 			if err != nil {
 				log.Println(err)
@@ -64,7 +64,7 @@ func main() {
 
 	} else {
 		go func() {
-			mlogger.Info("Server started" + "address:" + flags.FlagRunAddr)
+			mlogger.Info("Server started at " + "address: http://" + flags.FlagRunAddr)
 			if err := server.ListenAndServe(); err != nil {
 				// записываем в лог ошибку, если сервер не запустился
 				mlogger.ServerStartLog(err.Error())
