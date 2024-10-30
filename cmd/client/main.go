@@ -8,12 +8,14 @@ import (
 	"github.com/KznRkjp/go-keeper.git/internal/config"
 	"github.com/KznRkjp/go-keeper.git/internal/encrypt"
 	"github.com/KznRkjp/go-keeper.git/internal/middleware/mlogger"
+	"github.com/MasterDimmy/go-cls"
 	"go.uber.org/zap"
 )
 
 // var User models.ClientUser
 
 func main() {
+	cls.CLS()
 	mlogger.Debug = true
 	//создаем экземпляр логгера
 	mlogger.Logger = zap.Must(zap.NewProduction())
@@ -26,9 +28,13 @@ func main() {
 	config.Client.URI.GetData = "/api/v1/data"
 	//***
 
+	fmt.Println("go-keeper-client")
 	buildinfo.PrintBuildVersionDate()
 
+	//interface
 	clientapp.MainInterface()
+	clientapp.InnerInterface()
+	// clientapp.GetData(&clientapp.User)
 
 	secretString, err := encrypt.EncryptData(clientapp.User.User.Password, clientapp.User.User.Password)
 	if err != nil {

@@ -1,3 +1,5 @@
+github.com/MasterDimmy/go-cls v0.0.1 h1:vjdA29bIJVNJgHIbNRvdI5CW8xrxewvhYY0mWdv+lS4=
+github.com/MasterDimmy/go-cls v0.0.1/go.mod h1:9GHKg2gqVQrEHbhktGpeMVeY/VeUm+jWUrgaaflp8N8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/go-chi/chi v1.5.5 h1:vOB/HbEMt9QqBqErz07QehcOKHaWFtuj87tTDVz2qXE=
 github.com/go-chi/chi v1.5.5/go.mod h1:C9JqLr3tIYjDOZpzn+BCuxY8z8vmca43EeMgyZt7irw=
