@@ -63,9 +63,9 @@ func createInitialDB(db *sql.DB) error {
 
 	//START ########## Таблица учетных данных - логопас
 	insertDynStmtLogopass := `CREATE TABLE logopass (id SERIAL PRIMARY KEY,
-		 									name TEXT,
-											login TEXT,
-											password TEXT,
+		 									name bytea,
+											login bytea,
+											password bytea,
 											go_k_user_id INTEGER,
 											created_at timestamp default current_timestamp,
 											CONSTRAINT fk_go_k_user_id FOREIGN KEY (go_k_user_id) REFERENCES go_k_users (id));`

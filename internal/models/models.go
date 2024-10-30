@@ -1,6 +1,8 @@
 package models
 
-import "time"
+import (
+	"time"
+)
 
 //  Пользователь
 type User struct {
@@ -13,9 +15,9 @@ type User struct {
 // Хранимые данные пользователя - логин и пароль
 type LoginPassword struct {
 	ID        int64     `json:"id"`
-	Name      string    `json:"name"`
-	Login     string    `json:"login"`
-	Password  string    `json:"password"`
+	Name      []byte    `json:"name"`
+	Login     []byte    `json:"login"`
+	Password  []byte    `json:"password"`
 	CreatedAt time.Time `json:"created_at"`
 }
 

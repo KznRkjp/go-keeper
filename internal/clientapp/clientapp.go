@@ -150,6 +150,21 @@ func HTTPwithCookiesPost(url string, user *models.ClientUser, data []byte) ([]by
 
 func PostDataLP(user *models.ClientUser, data *models.LoginPassword) error {
 	url := config.Client.ServerAddress + config.Client.URI.PostLP
+	var err error
+	// login, err := encrypt.EncryptData(user.User.Password, data.Login)
+	// if err != nil {
+	// 	mlogger.Info(err.Error())
+	// 	return err
+	// }
+	// data.Login = login
+	// password, err := encrypt.EncryptData(user.User.Password, data.Password)
+	// if err != nil {
+	// 	mlogger.Info(err.Error())
+	// 	return err
+	// }
+	// data.Password = password
+
+	// data.Password, err = encrypt.EncryptData(data.Password)
 	json, err := json.Marshal(data)
 	if err != nil {
 		mlogger.Info(err.Error())
