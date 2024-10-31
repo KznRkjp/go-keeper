@@ -3,52 +3,54 @@ package main
 import (
 	"fmt"
 
-	"crypto/aes"
-	"crypto/cipher"
-	"crypto/sha256"
-	"encoding/hex"
-
 	"github.com/KznRkjp/go-keeper.git/internal/buildinfo"
-	"github.com/KznRkjp/go-keeper.git/internal/encrypt"
+	"github.com/KznRkjp/go-keeper.git/internal/clientapp"
+	"github.com/KznRkjp/go-keeper.git/internal/config"
+	"github.com/KznRkjp/go-keeper.git/internal/middleware/mlogger"
+	"github.com/MasterDimmy/go-cls"
+	"go.uber.org/zap"
 )
 
-const (
-	password = "x35k9f"
-	msg      = `0ba7cd8c624345451df4710b81d1a349ce401e61bc7eb704ca` +
-		`a84a8cde9f9959699f75d0d1075d676f1fe2eb475cf81f62ef` +
-		`f701fee6a433cfd289d231440cf549e40b6c13d8843197a95f` +
-		`8639911b7ed39a3aec4dfa9d286095c705e1a825b10a9104c6` +
-		`be55d1079e6c6167118ac91318fe`
-)
+// var User models.ClientUser
 
 func main() {
+	cls.CLS()
+	mlogger.Debug = true
+	//создаем экземпляр логгера
+	mlogger.Logger = zap.Must(zap.NewProduction())
+	defer mlogger.Logger.Sync()
+
+	// **** пока так - кстати это надо тогда перенести в роутер
+	config.Client.ServerAddress = "http://localhost:4443"
+	config.Client.URI.RegisterUser = "/api/v1/register"
+	config.Client.URI.LoginUser = "/api/v1/login"
+	config.Client.URI.GetData = "/api/v1/data"
+	config.Client.URI.PostLP = "/api/v1/data/lp"
+	config.Client.URI.PostBC = "/api/v1/data/bc"
+	config.Client.URI.PostTxt = "/api/v1/data/txt"
+	config.Client.URI.PostBM = "/api/v1/data/bm"
+	config.Client.URI.DeleteLP = "/api/v1/data/lp/"   //{id}
+	config.Client.URI.DeleteBC = "/api/v1/data/bc/"   //{id}
+	config.Client.URI.DeleteTxt = "/api/v1/data/txt/" //{id}
+	config.Client.URI.DeleteBM = "/api/v1/data/bm/"   //{id}
+	config.Client.URI.PutLP = "/api/v1/data/lp"
+	config.Client.URI.PutBC = "/api/v1/data/bc"
+	config.Client.URI.PutTxt = "/api/v1/data/txt"
+	config.Client.URI.PutBM = "/api/v1/data/bm"
+	//***
+
+	fmt.Println("go-keeper-client")
 	buildinfo.PrintBuildVersionDate()
-	fmt.Println("pass")
-	key := sha256.Sum256([]byte(password))
-	aesblock, err := aes.NewCipher(key[:])
-	if err != nil {
-		panic(err)
-	}
-	aesgcm, err := cipher.NewGCM(aesblock)
-	if err != nil {
-		panic(err)
-	}
-	// создаём вектор инициализации
-	nonce := key[len(key)-aesgcm.NonceSize():]
-	encrypted, err := hex.DecodeString(msg)
-	if err != nil {
-		panic(err)
-	}
-	// расшифровываем
-	decrypted, err := aesgcm.Open(nil, nonce, encrypted, nil)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(string(decrypted))
-	secretString, err := encrypt.EncryptData(password, "secret message")
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(secretString)
-	fmt.Println(encrypt.DecryptData(password, secretString))
+
+	//interface
+	clientapp.MainInterface()
+	clientapp.InnerInterface()
+	// clientapp.GetData(&clientapp.User)
+
+	// secretString, err := encrypt.EncryptData(clientapp.User.User.Password, clientapp.User.User.Password)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// fmt.Println(secretString)
+	// fmt.Println(encrypt.DecryptData(clientapp.User.User.Password, secretString))
 }

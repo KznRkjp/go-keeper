@@ -63,9 +63,9 @@ func createInitialDB(db *sql.DB) error {
 
 	//START ########## Таблица учетных данных - логопас
 	insertDynStmtLogopass := `CREATE TABLE logopass (id SERIAL PRIMARY KEY,
-		 									name TEXT,
-											login TEXT,
-											password TEXT,
+		 									name bytea,
+											login bytea,
+											password bytea,
 											go_k_user_id INTEGER,
 											created_at timestamp default current_timestamp,
 											CONSTRAINT fk_go_k_user_id FOREIGN KEY (go_k_user_id) REFERENCES go_k_users (id));`
@@ -84,9 +84,10 @@ func createInitialDB(db *sql.DB) error {
 
 	//START ######### Таблица учетных данных - банковские карты
 	insertDynStmtBankCard := `CREATE TABLE bank_card (id SERIAL PRIMARY KEY,
-		 									card_holder_name TEXT,
-											card_number TEXT,
-											expiration_date TEXT,
+											card_name bytea,
+		 									card_holder_name bytea,
+											card_number bytea,
+											expiration_date bytea,
 											go_k_user_id INTEGER,
 											created_at timestamp default current_timestamp,
 											CONSTRAINT fk_go_k_user_id FOREIGN KEY (go_k_user_id) REFERENCES go_k_users (id));`
@@ -106,8 +107,8 @@ func createInitialDB(db *sql.DB) error {
 	// START ######### Таблица текстовых данных
 
 	insertDynStmtTextData := `CREATE TABLE text_data (id SERIAL PRIMARY KEY,
-											name TEXT,
-		 									text TEXT,
+											name bytea,
+		 									text bytea,
 											go_k_user_id INTEGER,
 											created_at timestamp default current_timestamp,
 											CONSTRAINT fk_go_k_user_id FOREIGN KEY (go_k_user_id) REFERENCES go_k_users (id));`
@@ -126,9 +127,9 @@ func createInitialDB(db *sql.DB) error {
 
 	// START ######### Таблица бинарных данных
 	insertDynStmtBinaryData := `CREATE TABLE binary_data (id SERIAL PRIMARY KEY,
-											name TEXT,
-		 									file_name TEXT,
-											location TEXT,
+											name bytea,
+		 									file_name bytea,
+											location bytea,
 											go_k_user_id INTEGER,
 											created_at timestamp default current_timestamp,
 											CONSTRAINT fk_go_k_user_id FOREIGN KEY (go_k_user_id) REFERENCES go_k_users (id));`

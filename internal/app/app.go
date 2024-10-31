@@ -5,10 +5,8 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/KznRkjp/go-keeper.git/internal/database"
-	"github.com/KznRkjp/go-keeper.git/internal/encrypt"
 	"github.com/KznRkjp/go-keeper.git/internal/middleware/mlogger"
 	"github.com/KznRkjp/go-keeper.git/internal/models"
 )
@@ -72,108 +70,6 @@ func PostLoginUser(res http.ResponseWriter, req *http.Request) {
 	res.WriteHeader(http.StatusOK)
 }
 
-// PostData - handler для /api/v1/data/lp - добаляает данные login password в базу.
-func PostDataLP(res http.ResponseWriter, req *http.Request) {
-	mlogger.Info("Posting data - LP")
-	userId := checkCookie(req)
-	if userId == 0 {
-		mlogger.Info("User not found")
-		res.WriteHeader(http.StatusNotFound)
-		return
-	}
-	var data models.LoginPassword
-	dec := json.NewDecoder(req.Body)
-	err := dec.Decode(&data)
-	if err != nil {
-		http.Error(res, "can't decode body", http.StatusBadRequest)
-		return
-	}
-	// data.UserID = userId
-	err = database.PostDataLP(&data, &userId, req.Context())
-	if err != nil {
-		mlogger.Info(err.Error())
-		res.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	res.WriteHeader(http.StatusCreated)
-}
-
-// PostData - handler для /api/v1/data/bc - добаляает данные bank card в базу.
-func PostDataBC(res http.ResponseWriter, req *http.Request) {
-	mlogger.Info("Posting data - Bank Card")
-	userId := checkCookie(req)
-	if userId == 0 {
-		mlogger.Info("User not found")
-		res.WriteHeader(http.StatusNotFound)
-		return
-	}
-	var data models.BankCard
-	dec := json.NewDecoder(req.Body)
-	err := dec.Decode(&data)
-	if err != nil {
-		http.Error(res, "can't decode body", http.StatusBadRequest)
-		return
-	}
-	err = database.PostDataBC(&data, &userId, req.Context())
-	if err != nil {
-		mlogger.Info(err.Error())
-		res.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	res.WriteHeader(http.StatusCreated)
-	// data.User
-}
-
-// PostData - handler для /api/v1/data/txt - добаляает данные text в базу.
-func PostDataTxt(res http.ResponseWriter, req *http.Request) {
-	mlogger.Info("Posting data - Text")
-	userId := checkCookie(req)
-	if userId == 0 {
-		mlogger.Info("User not found")
-		res.WriteHeader(http.StatusNotFound)
-		return
-	}
-	var data models.TextMessage
-	dec := json.NewDecoder(req.Body)
-	err := dec.Decode(&data)
-	if err != nil {
-		http.Error(res, "can't decode body", http.StatusBadRequest)
-		return
-	}
-	err = database.PostDataTxt(&data, &userId, req.Context())
-	if err != nil {
-		mlogger.Info(err.Error())
-		res.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	res.WriteHeader(http.StatusCreated)
-}
-
-func PostDataBM(res http.ResponseWriter, req *http.Request) {
-	mlogger.Info("Posting data - Binary Message")
-	userId := checkCookie(req)
-	if userId == 0 {
-		mlogger.Info("User not found")
-		res.WriteHeader(http.StatusNotFound)
-		return
-	}
-	var data models.BinaryMessage
-	dec := json.NewDecoder(req.Body)
-	err := dec.Decode(&data)
-	if err != nil {
-		http.Error(res, "can't decode body", http.StatusBadRequest)
-		return
-	}
-	err = database.PostDataBM(&data, &userId, req.Context())
-	if err != nil {
-		mlogger.Info(err.Error())
-		res.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	res.WriteHeader(http.StatusCreated)
-
-}
-
 // GetData - handler для /api/v1/data - получает ВСЕ данные из базы.
 func GetData(res http.ResponseWriter, req *http.Request) {
 	mlogger.Info("Getting data")
@@ -196,41 +92,4 @@ func GetData(res http.ResponseWriter, req *http.Request) {
 	// }
 	res.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(res).Encode(data)
-}
-
-// writes cookie directly to response
-func createCookie(res *http.ResponseWriter, user *models.User) {
-	mlogger.Info("Creating cookie for user" + user.Email + " with ID" + strconv.FormatInt(user.ID, 10))
-	expires := time.Now().Add(encrypt.TokenExp)
-	token, err := encrypt.BuildJWTString(int(user.ID))
-	if err != nil {
-		mlogger.Info(err.Error())
-		return
-	}
-	mlogger.Info("JWT: " + token + " Expires:" + expires.String())
-	cookie := http.Cookie{
-		Name:    "JWT",
-		Value:   token,
-		Expires: expires,
-	}
-	http.SetCookie(*res, &cookie)
-}
-
-// вспомогательная функция проверки куки и полчения из него ID пользователя
-// надо конечно во wrapper, но что получилось - то получилось
-func checkCookie(req *http.Request) int {
-	mlogger.Info("Checking cookie")
-
-	cookie, err := req.Cookie("JWT")
-	// fmt.Println(cookie)
-	if err != nil {
-		mlogger.Info(err.Error())
-		return 0
-	}
-	userId, err := encrypt.GetUserID(cookie.Value)
-	if err != nil {
-		mlogger.Info(err.Error())
-		return 0
-	}
-	return userId
 }
