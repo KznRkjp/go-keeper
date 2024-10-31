@@ -52,7 +52,7 @@ func MainInterface() {
 }
 
 func InnerInterface() {
-	// cls.CLS()
+	cls.CLS()
 	fmt.Println("You logged in as: " + User.User.Email)
 	fmt.Println("To print login/password sheet enter 1")
 	fmt.Println("To print bank cards sheet enter 2")
