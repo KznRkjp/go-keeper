@@ -69,7 +69,7 @@ func PrintBC(lp []models.BankCard, user *models.ClientUser) {
 	t.Render()
 }
 
-func PrintTxt(lp []models.Text, user *models.ClientUser) {
+func PrintTxt(lp []models.TextMessage, user *models.ClientUser) {
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
 	t.AppendHeader(table.Row{"#", "Name", "Text"})
