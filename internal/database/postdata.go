@@ -21,8 +21,8 @@ func PostDataLP(data *models.LoginPassword, userId *int, ctx context.Context) er
 
 // PostDataLP - добавление данных типа bank card
 func PostDataBC(data *models.BankCard, userId *int, ctx context.Context) error {
-	insertDynStmt := `insert into "bank_card"("card_holder_name", "card_number", "expiration_date", "go_k_user_id") values($1, $2, $3, $4)`
-	_, err := db.ExecContext(ctx, insertDynStmt, data.CardHolderName, data.CardNumber, data.ExpirationDate, userId)
+	insertDynStmt := `insert into "bank_card"("card_name","card_holder_name", "card_number", "expiration_date", "go_k_user_id") values($1, $2, $3, $4, $5)`
+	_, err := db.ExecContext(ctx, insertDynStmt, data.CardName, data.CardHolderName, data.CardNumber, data.ExpirationDate, userId)
 	if err != nil {
 		mlogger.Logger.Error(err.Error())
 		return err
