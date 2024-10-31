@@ -28,7 +28,7 @@ func TxtMessageInterface(message string) {
 	case "0":
 		InnerInterface()
 	case "add":
-		AddLoginPassword()
+		AddTxtMsg()
 	default:
 		LoginPasswordInterface("You've entered wrong ID")
 	}

@@ -32,7 +32,7 @@ func PostDataBC(data *models.BankCard, userId *int, ctx context.Context) error {
 
 // PostDataLP - добавление данных типа text message
 func PostDataTxt(data *models.TextMessage, userId *int, ctx context.Context) error {
-	insertDynStmt := `insert into "text_data("name", "text", "go_k_user_id") values($1, $2, $3)`
+	insertDynStmt := `insert into "text_data" ("name", "text", "go_k_user_id") values($1, $2, $3)`
 	_, err := db.ExecContext(ctx, insertDynStmt, data.Name, data.Text, userId)
 	if err != nil {
 		mlogger.Logger.Error(err.Error())

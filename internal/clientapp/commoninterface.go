@@ -55,9 +55,9 @@ func InnerInterface() {
 	case 2:
 		BankCardInterface("")
 	case 3:
-		// TxtMessageInterface("")
+		TxtMessageInterface("")
 	case 4:
-		fmt.Println("4")
+		BinMessageInterface("")
 	case 5:
 		cls.CLS()
 		MainInterface()
