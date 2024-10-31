@@ -19,10 +19,8 @@ func LoginPasswordInterface(message string) {
 	if message != "" {
 		fmt.Println(message)
 	}
-	// cls.CLS()
 	fmt.Println("You logged in as: " + User.User.Email)
 	mlogger.Info(User.JWT)
-	// mlogger.Info(string(UserData))
 	prettyprint.PrintLP(UserData.LoginPass, &User)
 	fmt.Println("Enter ID of record you want to edit, 0 to go back and type \"add\" to add a new record")
 	var i string
@@ -40,17 +38,18 @@ func LoginPasswordInterface(message string) {
 func AddLoginPassword() {
 	cls.CLS()
 	var lp models.LoginPassword
-	fmt.Println("You logged in as: " + User.User.Email)
-	fmt.Println("Type name for the record you can identify it by later on (web-site, app etc.)")
-	// var name, login, password string
 	var err error
 
+	fmt.Println("You logged in as: " + User.User.Email)
+	//##
+	fmt.Println("Type name for the record you can identify it by later on (web-site, app etc.)")
 	name := cliReader()
 	lp.Name, err = encrypt.EncryptData(User.User.Password, name)
 	if err != nil {
 		mlogger.Info(err.Error())
 		LoginPasswordInterface(err.Error())
 	}
+	//##
 	fmt.Println("Type login")
 	login := cliReader()
 	lp.Login, err = encrypt.EncryptData(User.User.Password, login)
@@ -58,6 +57,7 @@ func AddLoginPassword() {
 		mlogger.Info(err.Error())
 		LoginPasswordInterface(err.Error())
 	}
+	//##
 	fmt.Println("Type password")
 	password := cliReader()
 	lp.Password, err = encrypt.EncryptData(User.User.Password, password)
