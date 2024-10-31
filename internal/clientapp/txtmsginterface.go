@@ -20,7 +20,7 @@ func TxtMessageInterface(message string) {
 	fmt.Println("You logged in as: " + User.User.Email)
 	mlogger.Info(User.JWT)
 	// mlogger.Info(string(UserData))
-	prettyprint.PrintBC(UserData.BankCards, &User)
+	prettyprint.PrintTxt(UserData.TextMsgs, &User)
 	fmt.Println("Enter ID of record you want to edit, 0 to go back and type \"add\" to add a new record")
 	var i string
 	fmt.Scan(&i)
@@ -34,41 +34,32 @@ func TxtMessageInterface(message string) {
 	}
 }
 
-func AddBankCard1() {
+func AddTxtMsg() {
 	cls.CLS()
-	var lp models.LoginPassword
+	var lp models.TextMessage
 	fmt.Println("You logged in as: " + User.User.Email)
-	fmt.Println("Type name for the record you can identify it by later on (web-site, app etc.)")
-	var name, login, password string
+	fmt.Println("Type name for the text record you can identify it by later on (web-site, app, list of people to kill,  etc.)")
 	var err error
-	fmt.Scan(&name)
+	name := cliReader()
 	lp.Name, err = encrypt.EncryptData(User.User.Password, name)
 	if err != nil {
 		mlogger.Info(err.Error())
-		LoginPasswordInterface(err.Error())
+		TxtMessageInterface(err.Error())
 	}
-	fmt.Println("Type login")
-	fmt.Scan(&login)
-	lp.Login, err = encrypt.EncryptData(User.User.Password, login)
+	fmt.Println("Type text you wish to save")
+	text := cliReader()
+	lp.Text, err = encrypt.EncryptData(User.User.Password, text)
 	if err != nil {
 		mlogger.Info(err.Error())
-		LoginPasswordInterface(err.Error())
+		TxtMessageInterface(err.Error())
 	}
-	fmt.Println("Type password")
-	fmt.Scan(&password)
-	lp.Password, err = encrypt.EncryptData(User.User.Password, password)
-	if err != nil {
-		mlogger.Info(err.Error())
-		LoginPasswordInterface(err.Error())
-	}
-
-	UserData.LoginPass = append(UserData.LoginPass, lp)
+	UserData.TextMsgs = append(UserData.TextMsgs, lp)
 	mlogger.Info("User data local append - ok")
-	err = PostDataLP(&User, &lp)
+	err = PostDataTxt(&User, &lp)
 	if err != nil {
-		mlogger.Info(err.Error())
-		LoginPasswordInterface(err.Error())
+		TxtMessageInterface(err.Error())
 	}
 
-	LoginPasswordInterface("")
+	TxtMessageInterface("")
+
 }

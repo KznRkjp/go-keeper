@@ -68,3 +68,18 @@ func PrintBC(lp []models.BankCard, user *models.ClientUser) {
 	t.SetStyle(table.StyleLight)
 	t.Render()
 }
+
+func PrintTxt(lp []models.Text, user *models.ClientUser) {
+	t := table.NewWriter()
+	t.SetOutputMirror(os.Stdout)
+	t.AppendHeader(table.Row{"#", "Name", "Text"})
+	for _, l := range lp {
+		name, err := encrypt.DecryptData(user.User.Password, l.Name)
+		if err != nil {
+			name = string(l.Name)
+		}
+		t.AppendRow([]interface{}{l.ID, name, string(l.Text)})
+	}
+	t.SetStyle(table.StyleLight)
+	t.Render()
+}
