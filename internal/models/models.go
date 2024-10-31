@@ -24,6 +24,7 @@ type LoginPassword struct {
 // Хранимые данные пользователя - банковская карта
 type BankCard struct {
 	ID             int64     `json:"id"`
+	CardName       []byte    `json:"card_name"` // [Visa, MasterCard
 	CardHolderName []byte    `json:"card_holder_name"`
 	CardNumber     []byte    `json:"card_number"`
 	ExpirationDate []byte    `json:"expiration_date"`

@@ -23,3 +23,8 @@ insert into bank_card (card_number, card_holder_name, expiration_date, go_k_user
 insert into binary_data (name, file_name, location, go_k_user_id) values('Best file','file_name.zip','/var/www/files/',1);
 
 insert into text_data (name, text, go_k_user_id) values('Very important note','XXX',1);
+
+DROP table logopass;
+DROP table bank_card;
+DROP table binary_data;
+DROP table text_data;

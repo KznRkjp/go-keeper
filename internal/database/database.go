@@ -84,6 +84,7 @@ func createInitialDB(db *sql.DB) error {
 
 	//START ######### Таблица учетных данных - банковские карты
 	insertDynStmtBankCard := `CREATE TABLE bank_card (id SERIAL PRIMARY KEY,
+											card_name bytea,
 		 									card_holder_name bytea,
 											card_number bytea,
 											expiration_date bytea,

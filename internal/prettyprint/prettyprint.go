@@ -40,3 +40,31 @@ func PrintLP(lp []models.LoginPassword, user *models.ClientUser) {
 	t.SetStyle(table.StyleLight)
 	t.Render()
 }
+
+func PrintBC(lp []models.BankCard, user *models.ClientUser) {
+	t := table.NewWriter()
+	t.SetOutputMirror(os.Stdout)
+	t.AppendHeader(table.Row{"#", "Card name", "Cardholder name", "Card number", "Expiration date"})
+	for _, l := range lp {
+		cardName, err := encrypt.DecryptData(user.User.Password, l.CardName)
+		if err != nil {
+			cardName = string(l.CardName)
+		}
+
+		cardholderName, err := encrypt.DecryptData(user.User.Password, l.CardHolderName)
+		if err != nil {
+			cardholderName = string(l.CardHolderName)
+		}
+		cardNumber, err := encrypt.DecryptData(user.User.Password, l.CardNumber)
+		if err != nil {
+			cardNumber = string(l.CardNumber)
+		}
+		expirationDate, err := encrypt.DecryptData(user.User.Password, l.ExpirationDate)
+		if err != nil {
+			expirationDate = string(l.ExpirationDate)
+		}
+		t.AppendRow([]interface{}{l.ID, cardName, cardholderName, cardNumber, expirationDate})
+	}
+	t.SetStyle(table.StyleLight)
+	t.Render()
+}
