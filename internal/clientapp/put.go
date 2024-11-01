@@ -14,20 +14,7 @@ import (
 
 func PutLP(dataType string, lp *models.LoginPassword) error {
 	mlogger.Info("Modifying LP record")
-	var url string
-	switch dataType {
-	case "lp":
-		url = config.Client.ServerAddress + config.Client.URI.PutLP
-	case "bc":
-		url = config.Client.ServerAddress + config.Client.URI.PutBC
-	case "txt":
-		url = config.Client.ServerAddress + config.Client.URI.PutTxt
-	case "bm":
-		url = config.Client.ServerAddress + config.Client.URI.PutBM
-	default:
-		mlogger.Info("Something went wrong")
-
-	}
+	url := putURL(dataType)
 
 	json, err := json.Marshal(lp)
 	if err != nil {
@@ -65,4 +52,23 @@ func HTTPwithCookiesPut(url string, user *models.ClientUser, data []byte) error 
 		return err
 	}
 	return nil
+}
+
+func putURL(dataType string) string {
+	var url string
+	switch dataType {
+	case "lp":
+		url = config.Client.ServerAddress + config.Client.URI.PutLP
+	case "bc":
+		url = config.Client.ServerAddress + config.Client.URI.PutBC
+	case "txt":
+		url = config.Client.ServerAddress + config.Client.URI.PutTxt
+	case "bm":
+		url = config.Client.ServerAddress + config.Client.URI.PutBM
+	default:
+		mlogger.Info("Something went wrong")
+		url = ""
+
+	}
+	return url
 }
