@@ -98,7 +98,7 @@ func HTTPwithCookiesPost(url string, user *models.ClientUser, data []byte) ([]by
 	}
 	if resp.StatusCode != 201 {
 		err = errors.New(url +
-			"\nresp.StatusCode: " + strconv.Itoa(resp.StatusCode))
+			"resp.StatusCode: " + strconv.Itoa(resp.StatusCode))
 		return nil, err
 	}
 	return nil, nil
