@@ -28,15 +28,12 @@ func Delete(dataType string, id string) error {
 
 	}
 
-	// url := config.Client.ServerAddress + config.Client.URI.PostBC
-	var err error
-
-	err = HTTPwithCookiesDelete(url, &User)
+	err := HTTPwithCookiesDelete(url, &User)
 	if err != nil {
 		mlogger.Info(err.Error())
 		return err
 	}
-	mlogger.Info("resp: " + err.Error())
+
 	return nil
 }
 

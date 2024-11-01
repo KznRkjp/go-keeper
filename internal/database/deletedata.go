@@ -23,9 +23,9 @@ func DeleteDataLP(recordId *string, userId *int, ctx context.Context) error {
 
 func DeleteDataBC(recordId *string, userId *int, ctx context.Context) error {
 	insertDynStmt := `
-	DELETE FROM "bank_card
-	WHERE "id = $1
-	AND "go_k_user_id = $2`
+	DELETE FROM bank_card
+	WHERE id = $1
+	AND go_k_user_id = $2`
 	_, err := db.ExecContext(ctx, insertDynStmt, recordId, userId)
 	if err != nil {
 		mlogger.Logger.Error(err.Error())
@@ -36,9 +36,9 @@ func DeleteDataBC(recordId *string, userId *int, ctx context.Context) error {
 
 func DeleteDataTxt(recordId *string, userId *int, ctx context.Context) error {
 	insertDynStmt := `
-	DELETE FROM "text_data"
-	WHERE "id = $1
-	AND "go_k_user_id = $2`
+	DELETE FROM text_data
+	WHERE id = $1
+	AND go_k_user_id = $2`
 	_, err := db.ExecContext(ctx, insertDynStmt, recordId, userId)
 	if err != nil {
 		mlogger.Logger.Error(err.Error())
@@ -50,8 +50,8 @@ func DeleteDataTxt(recordId *string, userId *int, ctx context.Context) error {
 func DeleteDataBM(recordId *string, userId *int, ctx context.Context) error {
 	insertDynStmt := `
 	DELETE FROM "binary_data"
-	WHERE "id = $1
-	AND "go_k_user_id = $2`
+	WHERE id = $1
+	AND go_k_user_id = $2`
 	_, err := db.ExecContext(ctx, insertDynStmt, recordId, userId)
 	if err != nil {
 		mlogger.Logger.Error(err.Error())

@@ -11,11 +11,8 @@ import (
 
 // DeleteDataLP - удаление записи logopass po ID записи и ID пользователя
 func DeleteDataLP(res http.ResponseWriter, req *http.Request) {
-	// recordId := chi.URLParam(req, "id")
-	// fmt.Println(req.URL.Query().Get("id"))
 	recordId := strings.Trim(req.RequestURI, "/")
 	recordId = strings.Split(recordId, "/")[len(strings.Split(recordId, "/"))-1]
-	// fmt.Println(shortURL)
 	mlogger.Info("Deleting data - LP with id: " + recordId)
 	userId := checkCookie(req)
 	if userId == 0 {
@@ -34,7 +31,8 @@ func DeleteDataLP(res http.ResponseWriter, req *http.Request) {
 }
 
 func DeleteDataBC(res http.ResponseWriter, req *http.Request) {
-	recordId := chi.URLParam(req, "id")
+	recordId := strings.Trim(req.RequestURI, "/")
+	recordId = strings.Split(recordId, "/")[len(strings.Split(recordId, "/"))-1]
 	mlogger.Info("Deleting data - BC with id: " + recordId)
 	userId := checkCookie(req)
 	if userId == 0 {

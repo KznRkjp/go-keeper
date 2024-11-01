@@ -2,6 +2,7 @@ package clientapp
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/KznRkjp/go-keeper.git/internal/encrypt"
 	"github.com/KznRkjp/go-keeper.git/internal/middleware/mlogger"
@@ -21,7 +22,7 @@ func BankCardInterface(message string) {
 	mlogger.Info(User.JWT)
 	// mlogger.Info(string(UserData))
 	prettyprint.PrintBC(UserData.BankCards, &User)
-	fmt.Println("Enter ID of record you want to edit, 0 to go back and type \"add\" to add a new record")
+	fmt.Println("Enter ID of bank card you want to edit/delete, 0 to go back and type \"add\" to add a new record")
 	var i string
 	fmt.Scan(&i)
 	switch i {
@@ -30,8 +31,47 @@ func BankCardInterface(message string) {
 	case "add":
 		AddBankCard()
 	default:
+		for _, k := range UserData.BankCards {
+			j, _ := strconv.ParseInt(i, 10, 64)
+			if k.ID == j {
+				fmt.Println(k)
+				mlogger.Info("Deleting record with ID: " + strconv.FormatInt(k.ID, 10))
+				EditBankCardInterface(&k)
+			}
+		}
+
 		BankCardInterface("You've entered wrong ID")
 	}
+}
+
+func EditBankCardInterface(BCRecord *models.BankCard) {
+	var lp []models.BankCard
+	lp = append(lp, *BCRecord)
+	prettyprint.PrintBC(lp, &User)
+	fmt.Println("Type \"d\" to delete, \"e\" to edit, 0 to go back")
+	var i string
+	fmt.Scan(&i)
+	switch i {
+	case "0":
+		BankCardInterface("")
+	case "d":
+		DeleteBC(BCRecord.ID)
+	case "e":
+		// EditBC(BCRecord)
+	default:
+		LoginPasswordInterface("You's entered wrong command")
+
+	}
+}
+
+func DeleteBC(id int64) {
+	for i, k := range UserData.BankCards {
+		if k.ID == id {
+			UserData.BankCards = append(UserData.BankCards[:i], UserData.BankCards[i+1:]...)
+		}
+	}
+	stringId := strconv.FormatInt(id, 10)
+	Delete("bc", stringId)
 }
 
 func AddBankCard() {
