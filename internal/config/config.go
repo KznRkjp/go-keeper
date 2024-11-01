@@ -8,11 +8,13 @@ import (
 )
 
 var Client ClientConfig
+var Server Config
 
 // Стуркрута для разбора файла конфигурации
 type Config struct {
 	ServerAddress string `json:"server_address"`
 	DatabaseDSN   string `json:"database_dsn"`
+	Debug         string `json:"debug"`
 }
 
 type ClientURI struct {

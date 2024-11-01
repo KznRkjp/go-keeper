@@ -4,6 +4,16 @@ import (
 	"time"
 )
 
+// database
+type Table struct {
+	Name       string `json:"name"`
+	InitString string `json:"init_string"`
+}
+
+type TableList struct {
+	Tables []Table `json:"tables"`
+}
+
 //  Пользователь
 type User struct {
 	ID        int64     `json:"id"`

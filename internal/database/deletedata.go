@@ -2,11 +2,13 @@ package database
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/KznRkjp/go-keeper.git/internal/middleware/mlogger"
 )
 
 func DeleteDataLP(recordId *string, userId *int, ctx context.Context) error {
+	mlogger.Info("recordId:" + *recordId + "userId:" + strconv.Itoa(*userId))
 	insertDynStmt := `
 	DELETE FROM "logopass"
 	WHERE "id" = $1

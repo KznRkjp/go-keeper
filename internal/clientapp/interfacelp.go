@@ -1,10 +1,8 @@
 package clientapp
 
 import (
-	"bufio"
 	"fmt"
-	"os"
-	"strings"
+	"strconv"
 
 	"github.com/KznRkjp/go-keeper.git/internal/encrypt"
 	"github.com/KznRkjp/go-keeper.git/internal/middleware/mlogger"
@@ -31,8 +29,26 @@ func LoginPasswordInterface(message string) {
 	case "add":
 		AddLoginPassword()
 	default:
-		LoginPasswordInterface("You've entered wrong ID")
+		for _, k := range UserData.LoginPass {
+			j, _ := strconv.ParseInt(i, 10, 64)
+			if k.ID == j {
+				fmt.Println(k)
+				mlogger.Info("Deleting record with ID: " + strconv.FormatInt(k.ID, 10))
+				DeleteLoginPassword(k.ID)
+			}
+		}
+		// LoginPasswordInterface("You've entered wrong ID")
 	}
+}
+
+func DeleteLoginPassword(id int64) {
+	for i, k := range UserData.LoginPass {
+		if k.ID == id {
+			UserData.LoginPass = append(UserData.LoginPass[:i], UserData.LoginPass[i+1:]...)
+		}
+	}
+	stringId := strconv.FormatInt(id, 10)
+	Delete("lp", stringId)
 }
 
 func AddLoginPassword() {
@@ -75,11 +91,4 @@ func AddLoginPassword() {
 	}
 
 	LoginPasswordInterface("")
-}
-
-func cliReader() string {
-	reader := bufio.NewReader(os.Stdin)
-	text, _ := reader.ReadString('\n')
-	text = strings.Replace(text, "\n", "", -1)
-	return text
 }
