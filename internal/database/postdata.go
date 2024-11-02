@@ -42,7 +42,7 @@ func PostDataTxt(data *models.TextMessage, userId *int, ctx context.Context) err
 }
 
 func PostDataBM(data *models.BinaryMessage, userId *int, ctx context.Context) error {
-	insertDynStmt := `insert into "binary_data"("name", "file_name", "location","go_k_user_id") values($1, $2, $3)`
+	insertDynStmt := `insert into "binary_data"("name", "file_name", "location","go_k_user_id") values($1, $2, $3, $4)`
 	_, err := db.ExecContext(ctx, insertDynStmt, data.Name, data.FileName, data.Location, userId)
 	if err != nil {
 		mlogger.Logger.Error(err.Error())
