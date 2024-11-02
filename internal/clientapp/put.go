@@ -12,17 +12,47 @@ import (
 	"github.com/KznRkjp/go-keeper.git/internal/models"
 )
 
-func PutLP(dataType string, lp *models.LoginPassword) error {
-	mlogger.Info("Modifying LP record")
-	url := putURL(dataType)
-
-	json, err := json.Marshal(lp)
-	if err != nil {
-		mlogger.Info(err.Error())
-		return err
+func PutData(lp *models.LoginPassword, bc *models.BankCard, txt *models.BankCard, bm *models.BinaryMessage) error {
+	var url string
+	var err error
+	var jsonBody []byte
+	if lp != nil {
+		mlogger.Info("Modifying LP record")
+		url = putURL("lp")
+		jsonBody, err = json.Marshal(lp)
+		if err != nil {
+			mlogger.Info(err.Error())
+			return err
+		}
 	}
-
-	err = HTTPwithCookiesPut(url, &User, json)
+	if bc != nil {
+		mlogger.Info("Modifying BC record")
+		url = putURL("bc")
+		jsonBody, err = json.Marshal(bc)
+		if err != nil {
+			mlogger.Info(err.Error())
+			return err
+		}
+	}
+	if txt != nil {
+		mlogger.Info("Modifying TXT record")
+		url = putURL("txt")
+		jsonBody, err = json.Marshal(txt)
+		if err != nil {
+			mlogger.Info(err.Error())
+			return err
+		}
+	}
+	if bm != nil {
+		mlogger.Info("Modifying BM record")
+		url = putURL("bm")
+		jsonBody, err = json.Marshal(bm)
+		if err != nil {
+			mlogger.Info(err.Error())
+			return err
+		}
+	}
+	err = HTTPwithCookiesPut(url, &User, jsonBody)
 	if err != nil {
 		mlogger.Info(err.Error())
 		return err
@@ -30,6 +60,25 @@ func PutLP(dataType string, lp *models.LoginPassword) error {
 
 	return nil
 }
+
+// func PutLP(dataType string, lp *models.LoginPassword) error {
+// 	mlogger.Info("Modifying LP record")
+// 	url := putURL(dataType)
+
+// 	json, err := json.Marshal(lp)
+// 	if err != nil {
+// 		mlogger.Info(err.Error())
+// 		return err
+// 	}
+
+// 	err = HTTPwithCookiesPut(url, &User, json)
+// 	if err != nil {
+// 		mlogger.Info(err.Error())
+// 		return err
+// 	}
+
+// 	return nil
+// }
 
 func HTTPwithCookiesPut(url string, user *models.ClientUser, data []byte) error {
 

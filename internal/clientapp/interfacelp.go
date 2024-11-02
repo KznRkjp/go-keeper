@@ -98,7 +98,7 @@ func EditLoginPassword(lp *models.LoginPassword) {
 		mlogger.Info(err.Error())
 		LoginPasswordInterface(err.Error())
 	}
-	PutLP("lp", lp)
+	PutData(lp, nil, nil, nil)
 	LoginPasswordInterface("Record edited")
 }
 
