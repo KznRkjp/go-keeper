@@ -12,7 +12,7 @@ import (
 	"github.com/KznRkjp/go-keeper.git/internal/models"
 )
 
-func PutData(lp *models.LoginPassword, bc *models.BankCard, txt *models.BankCard, bm *models.BinaryMessage) error {
+func PutData(lp *models.LoginPassword, bc *models.BankCard, txt *models.TextMessage, bm *models.BinaryMessage) error {
 	var url string
 	var err error
 	var jsonBody []byte

@@ -35,7 +35,7 @@ func BankCardInterface(message string) {
 			j, _ := strconv.ParseInt(i, 10, 64)
 			if k.ID == j {
 				fmt.Println(k)
-				mlogger.Info("Deleting record with ID: " + strconv.FormatInt(k.ID, 10))
+				mlogger.Info("Editing record with ID: " + strconv.FormatInt(k.ID, 10))
 				EditBankCardInterface(&k)
 			}
 		}
@@ -44,9 +44,9 @@ func BankCardInterface(message string) {
 	}
 }
 
-func EditBankCardInterface(BCRecord *models.BankCard) {
+func EditBankCardInterface(bcRecord *models.BankCard) {
 	var lp []models.BankCard
-	lp = append(lp, *BCRecord)
+	lp = append(lp, *bcRecord)
 	prettyprint.PrintBC(lp, &User)
 	fmt.Println("Type \"d\" to delete, \"e\" to edit, 0 to go back")
 	var i string
@@ -55,9 +55,9 @@ func EditBankCardInterface(BCRecord *models.BankCard) {
 	case "0":
 		BankCardInterface("")
 	case "d":
-		DeleteBC(BCRecord.ID)
+		DeleteBC(bcRecord.ID)
 	case "e":
-		EditBC(BCRecord)
+		EditBC(bcRecord)
 	default:
 		BankCardInterface("You's entered wrong command")
 
