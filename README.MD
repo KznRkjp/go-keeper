@@ -34,3 +34,4 @@ chmod +x client
 ./client
 ```
 По умолчанию клиент подключается к  ```http://localhost:4443``` (задается через параметр  ```-a localhost:4443```)
+[![asciicast](https://asciinema.org/a/n8mCXofmsbHPaMq487BtZIIht.svg)](https://asciinema.org/a/n8mCXofmsbHPaMq487BtZIIht)
