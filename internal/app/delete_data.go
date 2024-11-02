@@ -6,7 +6,6 @@ import (
 
 	"github.com/KznRkjp/go-keeper.git/internal/database"
 	"github.com/KznRkjp/go-keeper.git/internal/middleware/mlogger"
-	"github.com/go-chi/chi"
 )
 
 // DeleteDataLP - удаление записи logopass po ID записи и ID пользователя
@@ -51,8 +50,9 @@ func DeleteDataBC(res http.ResponseWriter, req *http.Request) {
 }
 
 func DeleteDataTxt(res http.ResponseWriter, req *http.Request) {
-	recordId := chi.URLParam(req, "id")
-	mlogger.Info("Deleting data - Text_message with id: " + recordId)
+	recordId := strings.Trim(req.RequestURI, "/")
+	recordId = strings.Split(recordId, "/")[len(strings.Split(recordId, "/"))-1]
+	mlogger.Info("Deleting data - TXT with id: " + recordId)
 	userId := checkCookie(req)
 	if userId == 0 {
 		mlogger.Info("User not found")
@@ -70,7 +70,8 @@ func DeleteDataTxt(res http.ResponseWriter, req *http.Request) {
 }
 
 func DeleteDataBM(res http.ResponseWriter, req *http.Request) {
-	recordId := chi.URLParam(req, "id")
+	recordId := strings.Trim(req.RequestURI, "/")
+	recordId = strings.Split(recordId, "/")[len(strings.Split(recordId, "/"))-1]
 	mlogger.Info("Deleting data - Binary_Message with id: " + recordId)
 	userId := checkCookie(req)
 	if userId == 0 {
