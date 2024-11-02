@@ -26,6 +26,7 @@ chmod +x server
 По умолчанию сервер стартует на ```http://localhost:4443``` (задается через ```-a localhost:4443```)
 Так же можно включить отладочные сообщения ```-debug true```
 На этом вкладку терминала с сервером можно оставить в покое.
+[![asciicast](https://asciinema.org/a/dOoeBPOqzcMjzoK6xZB0TlTZV.svg)](https://asciinema.org/a/dOoeBPOqzcMjzoK6xZB0TlTZV)
 ### Клиент
 ```bash
 cd go-keeper/bin/client/linux/
