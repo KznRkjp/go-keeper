@@ -57,11 +57,48 @@ func EditBankCardInterface(BCRecord *models.BankCard) {
 	case "d":
 		DeleteBC(BCRecord.ID)
 	case "e":
-		// EditBC(BCRecord)
+		EditBC(BCRecord)
 	default:
-		LoginPasswordInterface("You's entered wrong command")
+		BankCardInterface("You's entered wrong command")
 
 	}
+}
+
+func EditBC(bc *models.BankCard) {
+	var err error
+	fmt.Println("You logged in as: " + User.User.Email)
+	//##
+	fmt.Println("Type name for the card you can identify it by later on (Visa, MIR, Hornes&Hooves etc.)")
+	cardName := cliReader()
+	bc.CardName, err = encrypt.EncryptData(User.User.Password, cardName)
+	if err != nil {
+		mlogger.Info(err.Error())
+		BankCardInterface(err.Error())
+	}
+	//##
+	fmt.Println("Type cardholder name")
+	cardholderName := cliReader()
+	bc.CardHolderName, err = encrypt.EncryptData(User.User.Password, cardholderName)
+	if err != nil {
+		mlogger.Info(err.Error())
+		BankCardInterface(err.Error())
+	}
+	fmt.Println("Type card number")
+	cardNumber := cliReader()
+	bc.CardNumber, err = encrypt.EncryptData(User.User.Password, cardNumber)
+	if err != nil {
+		mlogger.Info(err.Error())
+		BankCardInterface(err.Error())
+	}
+	fmt.Println("Type expiration date")
+	expirationDate := cliReader()
+	bc.ExpirationDate, err = encrypt.EncryptData(User.User.Password, expirationDate)
+	if err != nil {
+		mlogger.Info(err.Error())
+		BankCardInterface(err.Error())
+	}
+	PutData(nil, bc, nil, nil)
+	BankCardInterface("Record edited")
 }
 
 func DeleteBC(id int64) {
