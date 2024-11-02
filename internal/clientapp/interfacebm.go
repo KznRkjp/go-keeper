@@ -59,7 +59,7 @@ func EditBmInterface(bmRecord *models.BinaryMessage) {
 	case "e":
 		EditBm(bmRecord)
 	default:
-		BinMessageInterface("You's entered wrong command")
+		BinMessageInterface("You've entered wrong command")
 
 	}
 }

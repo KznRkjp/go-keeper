@@ -59,7 +59,7 @@ func EditTextMsgInterface(txtRecord *models.TextMessage) {
 	case "e":
 		EditTxt(txtRecord)
 	default:
-		TxtMessageInterface("You's entered wrong command")
+		TxtMessageInterface("You've entered wrong command")
 
 	}
 }

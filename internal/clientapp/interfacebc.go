@@ -59,7 +59,7 @@ func EditBankCardInterface(bcRecord *models.BankCard) {
 	case "e":
 		EditBC(bcRecord)
 	default:
-		BankCardInterface("You's entered wrong command")
+		BankCardInterface("You've entered wrong command")
 
 	}
 }

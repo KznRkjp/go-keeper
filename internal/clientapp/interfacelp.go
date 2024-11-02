@@ -56,7 +56,7 @@ func EditLoginPasswordInterface(lpRecord *models.LoginPassword) {
 	case "e":
 		EditLoginPassword(lpRecord)
 	default:
-		LoginPasswordInterface("You's entered wrong command")
+		LoginPasswordInterface("You've entered wrong command")
 
 	}
 }
