@@ -22,6 +22,7 @@ func main() {
 	defer mlogger.Logger.Sync()
 
 	// **** пока так - кстати это надо тогда перенести в роутер
+
 	config.Client.ServerAddress = "http://localhost:4443"
 	config.Client.URI.RegisterUser = "/api/v1/register"
 	config.Client.URI.LoginUser = "/api/v1/login"

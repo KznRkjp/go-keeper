@@ -20,24 +20,22 @@ import (
 var HTTPS bool
 
 func main() {
-	//Печатем билд и дату
+	// Печатем билд и дату
 	buildinfo.PrintBuildVersionDate()
 
-	//получаем переменные для запуска
+	// получаем переменные для запуска
 	flags.ParseFlags()
-	//создаем экземпляр логгера
+	// создаем экземпляр логгера
 	mlogger.Logger = zap.Must(zap.NewProduction())
 	defer mlogger.Logger.Sync()
 
-	//TODO: create database
+	//  Подключаемся к базе, if лишний - на случай если используется локальное храние
+	//  но не в мою смену
 	if flags.FlagDBString != "" {
 		err := database.InitDB(flags.FlagDBString)
-		//sql.Open("pgx", flags.FlagDBString) // выбор способа храненеи данных в зависимости от флага.
 		if err != nil {
 			log.Fatal(err)
 		}
-		//defer database.DB.Close()
-		//database.CreateTable(database.DB) // создание необходимых таблиц если их нет.
 	} else {
 		log.Fatal("Error connecting to databse")
 	}
