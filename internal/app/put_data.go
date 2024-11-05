@@ -9,6 +9,7 @@ import (
 	"github.com/KznRkjp/go-keeper.git/internal/models"
 )
 
+// PutDataLP - хэндлер для /api/v1/data/bc метод PUT - редактирования записи login_password
 func PutDataLP(res http.ResponseWriter, req *http.Request) {
 	userId := checkCookie(req)
 	if userId == 0 {
@@ -33,6 +34,7 @@ func PutDataLP(res http.ResponseWriter, req *http.Request) {
 
 }
 
+// PutDataBC - хэндлер для /api/v1/data/bc метод PUT - редактирования записи bank_card
 func PutDataBC(res http.ResponseWriter, req *http.Request) {
 	userId := checkCookie(req)
 	if userId == 0 {
@@ -57,6 +59,7 @@ func PutDataBC(res http.ResponseWriter, req *http.Request) {
 
 }
 
+// PutDataTxt - хендлер для /api/v1/data/txt метод PUT - редактирования записи text_message
 func PutDataTxt(res http.ResponseWriter, req *http.Request) {
 	userId := checkCookie(req)
 	if userId == 0 {
@@ -81,6 +84,7 @@ func PutDataTxt(res http.ResponseWriter, req *http.Request) {
 
 }
 
+// PutDataBM - хендлер для /api/v1/data/bm метод PUT - редактирования записи binary_message
 func PutDataBM(res http.ResponseWriter, req *http.Request) {
 	userId := checkCookie(req)
 	if userId == 0 {

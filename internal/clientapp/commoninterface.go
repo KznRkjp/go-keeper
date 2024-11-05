@@ -9,8 +9,10 @@ import (
 	"gitlab.com/david_mbuvi/go_asterisks"
 )
 
+// Пользователь
 var User models.ClientUser
 
+// Главный интерфейс - регистрация или логин
 func MainInterface() {
 	cls.CLS()
 	var i int
@@ -51,6 +53,7 @@ func MainInterface() {
 
 }
 
+// Внутренний интерфейс - после регистрации либо логина.
 func InnerInterface() {
 	cls.CLS()
 	fmt.Println("You logged in as: " + User.User.Email)
@@ -66,9 +69,7 @@ func InnerInterface() {
 	fmt.Scan(&i)
 	switch i {
 	case 1:
-		// fmt.Println("1")
 		LoginPasswordInterface("")
-		// prettyprint.PrintLP(UserData.LoginPass)
 	case 2:
 		BankCardInterface("")
 	case 3:

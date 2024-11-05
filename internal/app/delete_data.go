@@ -8,7 +8,7 @@ import (
 	"github.com/KznRkjp/go-keeper.git/internal/middleware/mlogger"
 )
 
-// DeleteDataLP - удаление записи logopass po ID записи и ID пользователя
+// DeleteDataLP - хэндлер для /api/v1/data/lp/{id} - удаление записи logopass пo ID записи и ID пользователя
 func DeleteDataLP(res http.ResponseWriter, req *http.Request) {
 	recordId := strings.Trim(req.RequestURI, "/")
 	recordId = strings.Split(recordId, "/")[len(strings.Split(recordId, "/"))-1]
@@ -29,6 +29,7 @@ func DeleteDataLP(res http.ResponseWriter, req *http.Request) {
 	res.WriteHeader(http.StatusOK)
 }
 
+// DeleteDataBC - хэндлер для /api/v1/data/bc/{id} - удаление записи bankcard пo ID записи и ID пользователя
 func DeleteDataBC(res http.ResponseWriter, req *http.Request) {
 	recordId := strings.Trim(req.RequestURI, "/")
 	recordId = strings.Split(recordId, "/")[len(strings.Split(recordId, "/"))-1]
@@ -49,6 +50,7 @@ func DeleteDataBC(res http.ResponseWriter, req *http.Request) {
 	res.WriteHeader(http.StatusOK)
 }
 
+// DeleteDataTxt - хэндлер для /api/v1/data/txt/{id} - удаление записи text пo ID записи и ID пользователя
 func DeleteDataTxt(res http.ResponseWriter, req *http.Request) {
 	recordId := strings.Trim(req.RequestURI, "/")
 	recordId = strings.Split(recordId, "/")[len(strings.Split(recordId, "/"))-1]
@@ -69,6 +71,7 @@ func DeleteDataTxt(res http.ResponseWriter, req *http.Request) {
 	res.WriteHeader(http.StatusOK)
 }
 
+// DeleteDataBM - хэндлер для /api/v1/data/bm/{id} - удаление записи binary_message пo ID записи и ID пользователя
 func DeleteDataBM(res http.ResponseWriter, req *http.Request) {
 	recordId := strings.Trim(req.RequestURI, "/")
 	recordId = strings.Split(recordId, "/")[len(strings.Split(recordId, "/"))-1]

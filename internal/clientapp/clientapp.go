@@ -21,8 +21,11 @@ import (
 
 // curl -X POST http://localhost:4443/api/v1/register -H 'Content-Type: application/json' -d '{"email":"john@ne.doe","password":"my_password"}'
 // k := fmt.Sprintf(`{"email":"%s","password":"%s"}`, user.User.Email, user.User.Password)
+
+// Данные пользователя
 var UserData models.DBSearchAll
 
+// Регистрация пользователя
 func RegisterUser(user *models.ClientUser) error {
 	url := config.Client.ServerAddress + config.Client.URI.RegisterUser
 
@@ -44,6 +47,7 @@ func RegisterUser(user *models.ClientUser) error {
 	return err
 }
 
+// Авторизация пользователя
 func LoginUser(user *models.ClientUser) error {
 	url := config.Client.ServerAddress + config.Client.URI.LoginUser
 	json := []byte(fmt.Sprintf(`{"email":"%s","password":"%s"}`, user.User.Email, user.User.Password))
@@ -64,6 +68,7 @@ func LoginUser(user *models.ClientUser) error {
 	return err
 }
 
+// Получение данных пользователя
 func GetData(user *models.ClientUser) error {
 	url := config.Client.ServerAddress + config.Client.URI.GetData
 	resp, err := HTTPwithCookiesGet(url, user)
@@ -81,6 +86,7 @@ func GetData(user *models.ClientUser) error {
 	return nil
 }
 
+// Отправка данных пользователя c примесью cookie
 func HTTPwithCookiesGet(url string, user *models.ClientUser) ([]byte, error) {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {

@@ -85,6 +85,7 @@ func PostDataTxt(res http.ResponseWriter, req *http.Request) {
 	res.WriteHeader(http.StatusCreated)
 }
 
+// PostData - handler для /api/v1/data/bm - добаляает данные binary message в базу.
 func PostDataBM(res http.ResponseWriter, req *http.Request) {
 	mlogger.Info("Posting data - Binary Message")
 	userId := checkCookie(req)

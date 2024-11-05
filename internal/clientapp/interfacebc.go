@@ -11,17 +11,18 @@ import (
 	"github.com/MasterDimmy/go-cls"
 )
 
+// BankCardInterface - реализует интерфейс для работы с банковскими картами, основное меню
 func BankCardInterface(message string) {
 	cls.CLS()
 	GetData(&User)
 	if message != "" {
 		fmt.Println(message)
 	}
-	// cls.CLS()
 	fmt.Println("You logged in as: " + User.User.Email)
 	mlogger.Info(User.JWT)
-	// mlogger.Info(string(UserData))
+	// вывод всех сохраненных карт
 	prettyprint.PrintBC(UserData.BankCards, &User)
+
 	fmt.Println("Enter ID of bank card you want to edit/delete, 0 to go back and type \"add\" to add a new record")
 	var i string
 	fmt.Scan(&i)
@@ -44,6 +45,7 @@ func BankCardInterface(message string) {
 	}
 }
 
+// EditBankCardInterface - реализует интерфейс для редактирования или удаления банковской карты
 func EditBankCardInterface(bcRecord *models.BankCard) {
 	var lp []models.BankCard
 	lp = append(lp, *bcRecord)
@@ -64,6 +66,7 @@ func EditBankCardInterface(bcRecord *models.BankCard) {
 	}
 }
 
+// EditBC - реализует функцию редактирования банковской карты
 func EditBC(bc *models.BankCard) {
 	var err error
 	fmt.Println("You logged in as: " + User.User.Email)
@@ -101,6 +104,7 @@ func EditBC(bc *models.BankCard) {
 	BankCardInterface("Record edited")
 }
 
+// DeleteBC - реализует функцию удаления банковской карты
 func DeleteBC(id int64) {
 	for i, k := range UserData.BankCards {
 		if k.ID == id {
@@ -111,6 +115,7 @@ func DeleteBC(id int64) {
 	Delete("bc", stringId)
 }
 
+// AddBankCard - реализует функцию добавления банковской карты
 func AddBankCard() {
 	cls.CLS()
 	var lp models.BankCard

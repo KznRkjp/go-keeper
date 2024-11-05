@@ -11,6 +11,7 @@ import (
 	"github.com/KznRkjp/go-keeper.git/internal/models"
 )
 
+// Delete - функция удаления записи, получает на вход ID записи и тип, в зависимости от типа вызывает удаление по строке.
 func Delete(dataType string, id string) error {
 	mlogger.Info("delete.Delete id:" + id)
 	var url string
