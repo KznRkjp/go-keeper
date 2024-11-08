@@ -4,6 +4,17 @@ import (
 	"time"
 )
 
+// database
+type Table struct {
+	Name       string `json:"name"`
+	InitString string `json:"init_string"`
+}
+
+// список таблиц БД
+type TableList struct {
+	Tables []Table `json:"tables"`
+}
+
 //  Пользователь
 type User struct {
 	ID        int64     `json:"id"`
@@ -48,6 +59,7 @@ type BinaryMessage struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
+// Хранимые данные пользователя - все сообщения
 type DBSearchAll struct {
 	LoginPass  []LoginPassword `json:"login_password_list"`
 	BankCards  []BankCard      `json:"bank_card_list"`
@@ -55,6 +67,7 @@ type DBSearchAll struct {
 	BinaryMsgs []BinaryMessage `json:"binary_message_list"`
 }
 
+// Пользователь клиента
 type ClientUser struct {
 	User User   `json:"user"`
 	JWT  string `json:"jwt"`

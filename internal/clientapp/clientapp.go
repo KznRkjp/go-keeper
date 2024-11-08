@@ -1,6 +1,7 @@
 package clientapp
 
 import (
+	"bufio"
 	"bytes"
 	"compress/gzip"
 	"encoding/json"
@@ -8,7 +9,10 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 	"strconv"
+	"strings"
+	"time"
 
 	"github.com/KznRkjp/go-keeper.git/internal/config"
 	"github.com/KznRkjp/go-keeper.git/internal/middleware/mlogger"
@@ -17,8 +21,11 @@ import (
 
 // curl -X POST http://localhost:4443/api/v1/register -H 'Content-Type: application/json' -d '{"email":"john@ne.doe","password":"my_password"}'
 // k := fmt.Sprintf(`{"email":"%s","password":"%s"}`, user.User.Email, user.User.Password)
+
+// Данные пользователя
 var UserData models.DBSearchAll
 
+// Регистрация пользователя
 func RegisterUser(user *models.ClientUser) error {
 	url := config.Client.ServerAddress + config.Client.URI.RegisterUser
 
@@ -40,6 +47,7 @@ func RegisterUser(user *models.ClientUser) error {
 	return err
 }
 
+// Авторизация пользователя
 func LoginUser(user *models.ClientUser) error {
 	url := config.Client.ServerAddress + config.Client.URI.LoginUser
 	json := []byte(fmt.Sprintf(`{"email":"%s","password":"%s"}`, user.User.Email, user.User.Password))
@@ -60,12 +68,16 @@ func LoginUser(user *models.ClientUser) error {
 	return err
 }
 
+// Получение данных пользователя
 func GetData(user *models.ClientUser) error {
 	url := config.Client.ServerAddress + config.Client.URI.GetData
 	resp, err := HTTPwithCookiesGet(url, user)
 	if err != nil {
+		mlogger.Info(err.Error())
+		time.Sleep(1 * time.Second)
 		return err
 	}
+
 	err = json.Unmarshal(resp, &UserData)
 	if err != nil {
 		mlogger.Info(err.Error())
@@ -74,6 +86,7 @@ func GetData(user *models.ClientUser) error {
 	return nil
 }
 
+// Отправка данных пользователя c примесью cookie
 func HTTPwithCookiesGet(url string, user *models.ClientUser) ([]byte, error) {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -108,24 +121,9 @@ func HTTPwithCookiesGet(url string, user *models.ClientUser) ([]byte, error) {
 	return body, err
 }
 
-func HTTPwithCookiesPost(url string, user *models.ClientUser, data []byte) ([]byte, error) {
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(data))
-	if err != nil {
-		return nil, err
-	}
-
-	req.AddCookie(&http.Cookie{Name: "JWT", Value: user.JWT})
-	req.Header.Add("Content-Type", "application/json")
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	if resp.StatusCode != 201 {
-		err = errors.New(url +
-			"\nresp.StatusCode: " + strconv.Itoa(resp.StatusCode))
-		return nil, err
-	}
-	return nil, nil
+func cliReader() string {
+	reader := bufio.NewReader(os.Stdin)
+	text, _ := reader.ReadString('\n')
+	text = strings.Replace(text, "\n", "", -1)
+	return text
 }

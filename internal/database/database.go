@@ -4,9 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"log"
+	"fmt"
 	"strconv"
-	"time"
 
 	"github.com/KznRkjp/go-keeper.git/internal/encrypt"
 	"github.com/KznRkjp/go-keeper.git/internal/flags"
@@ -16,6 +15,60 @@ import (
 )
 
 var db *sql.DB
+
+var goKUsersTable = models.Table{
+	Name: "go_k_users",
+	InitString: `CREATE TABLE go_k_users (id SERIAL PRIMARY KEY, 
+											email text not null unique,
+											password TEXT,
+											created_at timestamp default current_timestamp);`,
+}
+
+var logopassTable = models.Table{
+	Name: "logopass",
+	InitString: `CREATE TABLE logopass (id SERIAL PRIMARY KEY,
+		name bytea,
+	   login bytea,
+	   password bytea,
+	   go_k_user_id INTEGER,
+	   created_at timestamp default current_timestamp,
+	   CONSTRAINT fk_go_k_user_id FOREIGN KEY (go_k_user_id) REFERENCES go_k_users (id));`,
+}
+
+var bCTable = models.Table{
+	Name: "bank_card",
+	InitString: `CREATE TABLE bank_card (id SERIAL PRIMARY KEY,
+											card_name bytea,
+		 									card_holder_name bytea,
+											card_number bytea,
+											expiration_date bytea,
+											go_k_user_id INTEGER,
+											created_at timestamp default current_timestamp,
+											CONSTRAINT fk_go_k_user_id FOREIGN KEY (go_k_user_id) REFERENCES go_k_users (id));`,
+}
+
+var txtMsgTable = models.Table{
+	Name: "text_data",
+	InitString: `CREATE TABLE text_data (id SERIAL PRIMARY KEY,
+											name bytea,
+		 									text bytea,
+											go_k_user_id INTEGER,
+											created_at timestamp default current_timestamp,
+											CONSTRAINT fk_go_k_user_id FOREIGN KEY (go_k_user_id) REFERENCES go_k_users (id));`,
+}
+
+var binTable = models.Table{
+	Name: "binary_data",
+	InitString: `CREATE TABLE binary_data (id SERIAL PRIMARY KEY,
+											name bytea,
+		 									file_name bytea,
+											location bytea,
+											go_k_user_id INTEGER,
+											created_at timestamp default current_timestamp,
+											CONSTRAINT fk_go_k_user_id FOREIGN KEY (go_k_user_id) REFERENCES go_k_users (id));`,
+}
+
+var tableList models.TableList
 
 // InitDB запускает подключение к базе данных
 func InitDB(dataSourceName string) error {
@@ -35,117 +88,44 @@ func GetDB() *sql.DB {
 }
 
 // Создание необходимых таблиц - можно конечно универасальную функцию... но потом.
-// Все так же падает при старте, надо переделать
+func collectTables(tablesList *models.TableList) {
+	tablesList.Tables = append(tableList.Tables, goKUsersTable)
+	tablesList.Tables = append(tableList.Tables, logopassTable)
+	tablesList.Tables = append(tableList.Tables, bCTable)
+	tablesList.Tables = append(tableList.Tables, txtMsgTable)
+	tablesList.Tables = append(tableList.Tables, binTable)
+}
+
+func createTable(db *sql.DB, table models.Table) error {
+	_, err := db.Exec(table.InitString)
+	if err != nil {
+		if err.Error() == "ERROR: relation \""+table.Name+"\" already exists (SQLSTATE 42P07)" {
+			mlogger.Info("Table " + table.Name + " already exists")
+			return nil
+		}
+
+		return err
+
+	}
+	return nil
+}
+
+// Создание базы данных (таблиц)
 func createInitialDB(db *sql.DB) error {
 
 	//что бы не забыть как запускать
 	mlogger.Info("DB String" + flags.FlagDBString)
 	var err error
-
-	//START ########## Таблица пользователей
-	insertDynStmtUsers := `CREATE TABLE go_k_users (id SERIAL PRIMARY KEY, 
-											email text not null unique,
-											password TEXT,
-											created_at timestamp default current_timestamp);`
-	// var errUsers error
-	_, errUsers := db.Exec(insertDynStmtUsers)
-	time.Sleep(time.Second * 1)
-	if errUsers.Error() == "ERROR: relation \"go_k_users\" already exists (SQLSTATE 42P07)" {
-		errUsers = nil
-		mlogger.Info("Table go_k_users already exists")
+	collectTables(&tableList)
+	// fmt.Println(tableList)
+	for _, table := range tableList.Tables {
+		err = createTable(db, table)
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
-	if errUsers != nil {
-		log.Fatal(errUsers)
-		err = errUsers
-	}
+	return nil
 
-	//STOP ########## Таблица пользователей
-
-	//START ########## Таблица учетных данных - логопас
-	insertDynStmtLogopass := `CREATE TABLE logopass (id SERIAL PRIMARY KEY,
-		 									name bytea,
-											login bytea,
-											password bytea,
-											go_k_user_id INTEGER,
-											created_at timestamp default current_timestamp,
-											CONSTRAINT fk_go_k_user_id FOREIGN KEY (go_k_user_id) REFERENCES go_k_users (id));`
-	// var errLP error
-	_, errLP := db.Exec(insertDynStmtLogopass)
-	if errLP.Error() == "ERROR: relation \"logopass\" already exists (SQLSTATE 42P07)" {
-		errLP = nil
-		mlogger.Info("Table logopass already exists")
-	}
-	if errLP != nil {
-		log.Fatal(errLP)
-		err = errLP
-	}
-	time.Sleep(time.Second * 1)
-	//STOP ######### Таблица учетных данных - логопас
-
-	//START ######### Таблица учетных данных - банковские карты
-	insertDynStmtBankCard := `CREATE TABLE bank_card (id SERIAL PRIMARY KEY,
-											card_name bytea,
-		 									card_holder_name bytea,
-											card_number bytea,
-											expiration_date bytea,
-											go_k_user_id INTEGER,
-											created_at timestamp default current_timestamp,
-											CONSTRAINT fk_go_k_user_id FOREIGN KEY (go_k_user_id) REFERENCES go_k_users (id));`
-	_, errBC := db.Exec(insertDynStmtBankCard)
-	time.Sleep(time.Second * 1)
-
-	if errBC.Error() == "ERROR: relation \"bank_card\" already exists (SQLSTATE 42P07)" {
-		errBC = nil
-		mlogger.Info("Table bank_card already exists")
-	}
-	if errBC != nil {
-		mlogger.Logger.Fatal(errBC.Error())
-		err = errBC
-	}
-	//STOP ######### Таблица учетных данных - банковские карты
-
-	// START ######### Таблица текстовых данных
-
-	insertDynStmtTextData := `CREATE TABLE text_data (id SERIAL PRIMARY KEY,
-											name bytea,
-		 									text bytea,
-											go_k_user_id INTEGER,
-											created_at timestamp default current_timestamp,
-											CONSTRAINT fk_go_k_user_id FOREIGN KEY (go_k_user_id) REFERENCES go_k_users (id));`
-	_, errTXT := db.Exec(insertDynStmtTextData)
-	// time.Sleep(time.Second * 1)
-	if errTXT.Error() == "ERROR: relation \"text_data\" already exists (SQLSTATE 42P07)" {
-		errTXT = nil
-		mlogger.Info("Table text_data already exists")
-	}
-	if errTXT != nil {
-		log.Fatal(errTXT)
-		err = errTXT
-	}
-
-	// STOP ######### Таблица текстовых данных
-
-	// START ######### Таблица бинарных данных
-	insertDynStmtBinaryData := `CREATE TABLE binary_data (id SERIAL PRIMARY KEY,
-											name bytea,
-		 									file_name bytea,
-											location bytea,
-											go_k_user_id INTEGER,
-											created_at timestamp default current_timestamp,
-											CONSTRAINT fk_go_k_user_id FOREIGN KEY (go_k_user_id) REFERENCES go_k_users (id));`
-	_, errBin := db.Exec(insertDynStmtBinaryData)
-	// time.Sleep(time.Second * 1)
-	if errBin.Error() == "ERROR: relation \"binary_data\" already exists (SQLSTATE 42P07)" {
-		errBin = nil
-		mlogger.Info("Table binary_data already exists")
-	}
-	if errBin != nil {
-		log.Fatal(errBin)
-		err = errBin
-	}
-	// STOP ######### Таблица бинарных данных
-
-	return err
 }
 
 // RegisterUser - регистрация нового пользователя

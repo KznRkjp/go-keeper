@@ -78,7 +78,34 @@ func PrintTxt(lp []models.TextMessage, user *models.ClientUser) {
 		if err != nil {
 			name = string(l.Name)
 		}
-		t.AppendRow([]interface{}{l.ID, name, string(l.Text)})
+		text, err := encrypt.DecryptData(user.User.Password, l.Text)
+		if err != nil {
+			text = string(l.Text)
+		}
+		t.AppendRow([]interface{}{l.ID, name, text})
+	}
+	t.SetStyle(table.StyleLight)
+	t.Render()
+}
+
+func PrintBM(lp []models.BinaryMessage, user *models.ClientUser) {
+	t := table.NewWriter()
+	t.SetOutputMirror(os.Stdout)
+	t.AppendHeader(table.Row{"#", "Name", "Filename", "Location"})
+	for _, l := range lp {
+		name, err := encrypt.DecryptData(user.User.Password, l.Name)
+		if err != nil {
+			name = string(l.Name)
+		}
+		filename, err := encrypt.DecryptData(user.User.Password, l.FileName)
+		if err != nil {
+			filename = string(l.FileName)
+		}
+		location, err := encrypt.DecryptData(user.User.Password, l.Location)
+		if err != nil {
+			location = string(l.Location)
+		}
+		t.AppendRow([]interface{}{l.ID, name, filename, location})
 	}
 	t.SetStyle(table.StyleLight)
 	t.Render()

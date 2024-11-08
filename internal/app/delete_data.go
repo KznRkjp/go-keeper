@@ -2,15 +2,16 @@ package app
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/KznRkjp/go-keeper.git/internal/database"
 	"github.com/KznRkjp/go-keeper.git/internal/middleware/mlogger"
-	"github.com/go-chi/chi"
 )
 
-// DeleteDataLP - удаление записи logopass po ID записи и ID пользователя
+// DeleteDataLP - хэндлер для /api/v1/data/lp/{id} - удаление записи logopass пo ID записи и ID пользователя
 func DeleteDataLP(res http.ResponseWriter, req *http.Request) {
-	recordId := chi.URLParam(req, "id")
+	recordId := strings.Trim(req.RequestURI, "/")
+	recordId = strings.Split(recordId, "/")[len(strings.Split(recordId, "/"))-1]
 	mlogger.Info("Deleting data - LP with id: " + recordId)
 	userId := checkCookie(req)
 	if userId == 0 {
@@ -28,8 +29,10 @@ func DeleteDataLP(res http.ResponseWriter, req *http.Request) {
 	res.WriteHeader(http.StatusOK)
 }
 
+// DeleteDataBC - хэндлер для /api/v1/data/bc/{id} - удаление записи bankcard пo ID записи и ID пользователя
 func DeleteDataBC(res http.ResponseWriter, req *http.Request) {
-	recordId := chi.URLParam(req, "id")
+	recordId := strings.Trim(req.RequestURI, "/")
+	recordId = strings.Split(recordId, "/")[len(strings.Split(recordId, "/"))-1]
 	mlogger.Info("Deleting data - BC with id: " + recordId)
 	userId := checkCookie(req)
 	if userId == 0 {
@@ -47,9 +50,11 @@ func DeleteDataBC(res http.ResponseWriter, req *http.Request) {
 	res.WriteHeader(http.StatusOK)
 }
 
+// DeleteDataTxt - хэндлер для /api/v1/data/txt/{id} - удаление записи text пo ID записи и ID пользователя
 func DeleteDataTxt(res http.ResponseWriter, req *http.Request) {
-	recordId := chi.URLParam(req, "id")
-	mlogger.Info("Deleting data - Text_message with id: " + recordId)
+	recordId := strings.Trim(req.RequestURI, "/")
+	recordId = strings.Split(recordId, "/")[len(strings.Split(recordId, "/"))-1]
+	mlogger.Info("Deleting data - TXT with id: " + recordId)
 	userId := checkCookie(req)
 	if userId == 0 {
 		mlogger.Info("User not found")
@@ -66,8 +71,10 @@ func DeleteDataTxt(res http.ResponseWriter, req *http.Request) {
 	res.WriteHeader(http.StatusOK)
 }
 
+// DeleteDataBM - хэндлер для /api/v1/data/bm/{id} - удаление записи binary_message пo ID записи и ID пользователя
 func DeleteDataBM(res http.ResponseWriter, req *http.Request) {
-	recordId := chi.URLParam(req, "id")
+	recordId := strings.Trim(req.RequestURI, "/")
+	recordId = strings.Split(recordId, "/")[len(strings.Split(recordId, "/"))-1]
 	mlogger.Info("Deleting data - Binary_Message with id: " + recordId)
 	userId := checkCookie(req)
 	if userId == 0 {

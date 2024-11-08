@@ -4,11 +4,13 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/KznRkjp/go-keeper.git/internal/config"
 	"go.uber.org/zap"
 )
 
 var Logger *zap.Logger
-var Debug bool = false
+
+// var Debug bool = false
 
 // Тут мы логгируем именно старт сервера
 func ServerStartLog(addr string) {
@@ -28,7 +30,7 @@ func ServerStartLog(addr string) {
 }
 
 func Info(msg string) {
-	if Debug {
+	if config.Server.Debug == "true" {
 		Logger.Info(msg)
 	}
 }

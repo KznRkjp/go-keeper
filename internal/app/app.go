@@ -71,6 +71,7 @@ func PostLoginUser(res http.ResponseWriter, req *http.Request) {
 }
 
 // GetData - handler для /api/v1/data - получает ВСЕ данные из базы.
+// основной хэндл для получания данных клиентом
 func GetData(res http.ResponseWriter, req *http.Request) {
 	mlogger.Info("Getting data")
 	userId := checkCookie(req)

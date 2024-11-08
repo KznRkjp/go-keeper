@@ -12,6 +12,7 @@ var BuildDate string
 
 //  Печатается билд и дата, при этом данные для надо конено передавать через билд пайплайном
 // примерно так: https://www.digitalocean.com/community/tutorials/using-ldflags-to-set-version-information-for-go-applications
+// на данный момент работает странно
 func PrintBuildVersionDate() {
 
 	if flags.FlagBuildVersion != "" {

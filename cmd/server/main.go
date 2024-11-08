@@ -20,26 +20,22 @@ import (
 var HTTPS bool
 
 func main() {
-	mlogger.Debug = true
-	//Печатем билд и дату
+	// Печатем билд и дату
 	buildinfo.PrintBuildVersionDate()
 
-	//создаем экземпляр логгера
+	// получаем переменные для запуска
+	flags.ParseFlags()
+	// создаем экземпляр логгера
 	mlogger.Logger = zap.Must(zap.NewProduction())
 	defer mlogger.Logger.Sync()
 
-	//получаем переменные для запуска
-	flags.ParseFlags()
-
-	//TODO: create database
+	//  Подключаемся к базе, if лишний - на случай если используется локальное храние
+	//  но не в мою смену
 	if flags.FlagDBString != "" {
 		err := database.InitDB(flags.FlagDBString)
-		//sql.Open("pgx", flags.FlagDBString) // выбор способа храненеи данных в зависимости от флага.
 		if err != nil {
 			log.Fatal(err)
 		}
-		//defer database.DB.Close()
-		//database.CreateTable(database.DB) // создание необходимых таблиц если их нет.
 	} else {
 		log.Fatal("Error connecting to databse")
 	}
@@ -55,7 +51,7 @@ func main() {
 
 	if HTTPS {
 		go func() {
-			mlogger.Logger.Info("Server started ", zap.String("address: https://", flags.FlagRunAddr))
+			mlogger.Logger.Info("Server started", zap.String("address", "https://"+flags.FlagRunAddr))
 			err := server.ListenAndServeTLS("server.crt", "server.key")
 			if err != nil {
 				log.Println(err)
@@ -64,7 +60,7 @@ func main() {
 
 	} else {
 		go func() {
-			mlogger.Info("Server started at " + "address: http://" + flags.FlagRunAddr)
+			mlogger.Logger.Info("Server started", zap.String("address", "http://"+flags.FlagRunAddr))
 			if err := server.ListenAndServe(); err != nil {
 				// записываем в лог ошибку, если сервер не запустился
 				mlogger.ServerStartLog(err.Error())

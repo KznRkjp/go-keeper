@@ -22,6 +22,8 @@ var FlagDBString string
 // FlagBuildVersion содержит номер билда
 var FlagBuildVersion string
 
+// var FlagDebug bool
+
 func ParseFlags() {
 	mlogger.Info("Strting parsing flags")
 	flag.StringVar(&FlagConfigPath, "c", "", "path to config file")
@@ -35,6 +37,9 @@ func ParseFlags() {
 
 	// регистрируем переменную FlagDBString - для подлкючения к базе данных
 	flag.StringVar(&FlagBuildVersion, "b", "0.0.0-a.1", "Build version")
+
+	// Перешли на иное
+	flag.StringVar(&config.Server.Debug, "debug", "false", "Debug true/false")
 
 	flag.Parse()
 
@@ -62,6 +67,6 @@ func ParseFlags() {
 
 		}
 	}
-	mlogger.Info("Flags parsed")
+	// mlogger.Info("Flags parsed")
 
 }

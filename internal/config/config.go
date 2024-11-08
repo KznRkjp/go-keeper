@@ -8,11 +8,13 @@ import (
 )
 
 var Client ClientConfig
+var Server Config
 
 // Стуркрута для разбора файла конфигурации
 type Config struct {
 	ServerAddress string `json:"server_address"`
 	DatabaseDSN   string `json:"database_dsn"`
+	Debug         string `json:"debug"`
 }
 
 type ClientURI struct {
@@ -54,3 +56,24 @@ func OpenConfigFile(filename string) (Config, error) {
 	fmt.Println(Conf)
 	return Conf, nil
 }
+
+// func ClientConfigData()ClientURI{
+// 	// var client ClientURI
+// 	// client.ServerAddress
+// 	// client.ServerAddress = "http://localhost:4443"
+// 	// client.URI.RegisterUser = "/api/v1/register"
+// 	// Client.URI.LoginUser = "/api/v1/login"
+// 	// Client.URI.GetData = "/api/v1/data"
+// 	// Client.URI.PostLP = "/api/v1/data/lp"
+// 	// Client.URI.PostBC = "/api/v1/data/bc"
+// 	// Client.URI.PostTxt = "/api/v1/data/txt"
+// 	// Client.URI.PostBM = "/api/v1/data/bm"
+// 	// Client.URI.DeleteLP = "/api/v1/data/lp/"   //{id}
+// 	// Client.URI.DeleteBC = "/api/v1/data/bc/"   //{id}
+// 	// Client.URI.DeleteTxt = "/api/v1/data/txt/" //{id}
+// 	// Client.URI.DeleteBM = "/api/v1/data/bm/"   //{id}
+// 	// Client.URI.PutLP = "/api/v1/data/lp"
+// 	// Client.URI.PutBC = "/api/v1/data/bc"
+// 	// Client.URI.PutTxt = "/api/v1/data/txt"
+// 	// Client.URI.PutBM = "/api/v1/data/bm"
+// }

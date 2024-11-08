@@ -1,7 +1,11 @@
 package clientapp
 
 import (
+	"bytes"
 	"encoding/json"
+	"errors"
+	"net/http"
+	"strconv"
 
 	"github.com/KznRkjp/go-keeper.git/internal/config"
 	"github.com/KznRkjp/go-keeper.git/internal/middleware/mlogger"
@@ -78,3 +82,24 @@ func PostDataBM(user *models.ClientUser, data *models.BinaryMessage) error {
 }
 
 // fmt.Println(
+func HTTPwithCookiesPost(url string, user *models.ClientUser, data []byte) ([]byte, error) {
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(data))
+	if err != nil {
+		return nil, err
+	}
+
+	req.AddCookie(&http.Cookie{Name: "JWT", Value: user.JWT})
+	req.Header.Add("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != 201 {
+		err = errors.New(url +
+			"resp.StatusCode: " + strconv.Itoa(resp.StatusCode))
+		return nil, err
+	}
+	return nil, nil
+}

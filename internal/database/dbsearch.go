@@ -31,7 +31,7 @@ func dbSearchLoginPassword(userId *int, ctx context.Context) ([]models.LoginPass
 // dbSearchBankCard - вспомогательная функция GetData для получения данных типа bank card
 func dbSearchBankCard(userId *int, ctx context.Context) ([]models.BankCard, error) {
 	var data []models.BankCard
-	rows, err := db.QueryContext(ctx, "select id, card_holder_name, card_number, expiration_date, created_at from bank_card where go_k_user_id = $1", userId)
+	rows, err := db.QueryContext(ctx, "select id,card_name, card_holder_name, card_number, expiration_date, created_at from bank_card where go_k_user_id = $1", userId)
 	if err != nil {
 		mlogger.Logger.Error(err.Error())
 		return nil, err
@@ -39,7 +39,7 @@ func dbSearchBankCard(userId *int, ctx context.Context) ([]models.BankCard, erro
 	defer rows.Close()
 	for rows.Next() {
 		var d models.BankCard
-		err = rows.Scan(&d.ID, &d.CardHolderName, &d.CardNumber, &d.ExpirationDate, &d.CreatedAt)
+		err = rows.Scan(&d.ID, &d.CardName, &d.CardHolderName, &d.CardNumber, &d.ExpirationDate, &d.CreatedAt)
 		if err != nil {
 			mlogger.Logger.Error(err.Error())
 			return nil, err
