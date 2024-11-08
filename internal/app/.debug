@@ -1,0 +1,30 @@
+Register:
+curl -X POST http://localhost:4443/api/v1/register -H 'Content-Type: application/json' -d '{"email":"john@ne.doe","password":"my_password"}'
+
+Login:
+curl -X POST http://localhost:4443/api/v1/login -H 'Content-Type: application/json' -d '{"email":"john@ne.doe","password":"my_password"}' -v
+
+Post data LP:
+curl -X POST http://localhost:4443/api/v1/data/lp -H 'Content-Type: application/json' -d '{"name":"my_first_logopass","login":"john123", "password":"secretpass"}' --cookie "JWT=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAxNDM1NTAsIlVzZXJJRCI6MX0.HXGMBmXutpnY0ynyfGD6vAF34PCVIa56vknjWqEtm_A" -v
+
+Get data:
+curl -X GET http://localhost:4443/api/v1/data -H 'Content-Type: application/json' --cookie "JWT=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAxNDM1NTAsIlVzZXJJRCI6MX0.HXGMBmXutpnY0ynyfGD6vAF34PCVIa56vknjWqEtm_A" -v
+
+Delete data:
+curl -X DELETE http://localhost:4443/api/v1/data/lp/2 --cookie "JWT=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAxNDM1NTAsIlVzZXJJRCI6MX0.HXGMBmXutpnY0ynyfGD6vAF34PCVIa56vknjWqEtm_A" -v
+
+Put data:
+curl -X PUT http://localhost:4443/api/v1/data/lp/2 -H 'Content-Type: application/json' -d '{"id":4,"name":"my_first_logopass_edited","login":"john123-456", "password":"secretpass"}' --cookie "JWT=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAxNDM1NTAsIlVzZXJJRCI6MX0.HXGMBmXutpnY0ynyfGD6vAF34PCVIa56vknjWqEtm_A" -v
+
+
+DB:
+insert into bank_card (card_number, card_holder_name, expiration_date, go_k_user_id) values('12312','name','exp date soon',1);
+
+insert into binary_data (name, file_name, location, go_k_user_id) values('Best file','file_name.zip','/var/www/files/',1);
+
+insert into text_data (name, text, go_k_user_id) values('Very important note','XXX',1);
+
+DROP table logopass;
+DROP table bank_card;
+DROP table binary_data;
+DROP table text_data;
